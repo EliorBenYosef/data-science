@@ -1,0 +1,4 @@
+https://github.com/jdwittenauer/ipython-notebooks
+https://github.com/f00-/machine-learning-with-python-cookbook-notes
+https://github.com/jdwittenauer/ipython-notebooks/tree/master/data
+https://github.com/jdwittenauer/ipython-notebooks/tree/master/exercises/ML
