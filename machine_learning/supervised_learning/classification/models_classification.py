@@ -23,7 +23,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 # from xgboost import XGBClassifier
-# from nimbusml.ensemble import LightGBMClassifier
+# from lightgbm import LGBMClassifier
 # from catboost import CatBoostClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
 
@@ -274,7 +274,7 @@ class ClassificationModels:
     #     """
     #     model_name = 'Light GBM'
     #
-    #     classifier = LightGBMClassifier()
+    #     classifier = LGBMClassifier()
     #     classifier.fit(self.X_train, self.y_train)
     #
     #     y_pred = classifier.predict(self.X_test)

@@ -4,7 +4,7 @@ from sklearn.svm import SVR, LinearSVR
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 # from xgboost import XGBRegressor
-# from nimbusml.ensemble import LightGBMRegressor
+# from lightgbm import LGBMRegressor
 # from catboost import CatBoostRegressor
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.metrics import r2_score, explained_variance_score, mean_squared_error
@@ -284,7 +284,7 @@ class RegressionModels:
     #     """
     #     model_name = 'Light GBM'
     #
-    #     classifier = LightGBMRegressor()
+    #     classifier = LGBMRegressor()
     #     classifier.fit(self.X_train, self.y_train)
     #
     #     y_pred = classifier.predict(self.X_test)
