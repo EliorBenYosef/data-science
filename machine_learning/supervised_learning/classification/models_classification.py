@@ -22,9 +22,9 @@ from sklearn.neighbors import KNeighborsClassifier, NearestCentroid
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
-# from xgboost import XGBClassifier
-# from lightgbm import LGBMClassifier
-# from catboost import CatBoostClassifier
+from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
+from catboost import CatBoostClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
 
 
@@ -252,62 +252,63 @@ class ClassificationModels:
 
         self.classifiers[model_name] = classifier
 
-    # def xgb(self):
-    #     """
-    #     XG Boost (XGB).
-    #     """
-    #     model_name = 'XG Boost'
-    #
-    #     classifier = XGBClassifier()
-    #     classifier.fit(self.X_train, self.y_train)
-    #
-    #     y_pred = classifier.predict(self.X_test)
-    #
-    #     self.evaluate_model_performance(self.y_test, y_pred, model_name)
-    #
-    #     self.classifiers[model_name] = classifier
+    def xgb(self):
+        """
+        XG Boost (XGB).
+        """
+        model_name = 'XG Boost'
 
-    # def lgbm(self):
-    #     """
-    #     Light GBM (Light GBM)
-    #     A gradient-based model that uses gradient boosting algorithm over decision trees models.
-    #     """
-    #     model_name = 'Light GBM'
-    #
-    #     classifier = LGBMClassifier()
-    #     classifier.fit(self.X_train, self.y_train)
-    #
-    #     y_pred = classifier.predict(self.X_test)
-    #
-    #     self.evaluate_model_performance(self.y_test, y_pred, model_name)
-    #
-    #     self.classifiers[model_name] = classifier
+        classifier = XGBClassifier()
+        classifier.fit(self.X_train, self.y_train)
 
-    # def cb(self):
-    #     """
-    #     Cat Boost (CatB)
-    #     https://catboost.ai/
-    #     A gradient-based model that uses gradient boosting algorithm over decision trees models.
-    #
-    #     Great quality without parameter tuning (self-tuning?) - provides great results with its default parameters
-    #     Categorical features support - automatically handles categorical data. Allows using non-numeric factors,
-    #         instead of having to pre-process your data or spend time and effort turning it to numbers.
-    #     Fast and scalable GPU version - has a fast (training & tuning) gradient-boosting implementation for GPU.
-    #         for large datasets, theres' a multi-card configuration.
-    #     Improved accuracy - a novel gradient-boosting scheme which reduce overfitting when constructing the models.
-    #     Fast prediction - the 'model applier' applies the trained model quickly and efficiently
-    #         even to latency-critical tasks.
-    #     """
-    #     model_name = 'Cat Boost'
-    #
-    #     classifier = CatBoostClassifier()
-    #     classifier.fit(self.X_train, self.y_train)
-    #
-    #     y_pred = classifier.predict(self.X_test)
-    #
-    #     self.evaluate_model_performance(self.y_test, y_pred, model_name)
-    #
-    #     self.classifiers[model_name] = classifier
+        y_pred = classifier.predict(self.X_test)
+
+        self.evaluate_model_performance(self.y_test, y_pred, model_name)
+
+        self.classifiers[model_name] = classifier
+
+    def lgbm(self):
+        """
+        Light GBM (Light GBM)
+        A gradient-based model that uses gradient boosting algorithm over decision trees models.
+        https://lightgbm.readthedocs.io/en/latest/pythonapi/lightgbm.LGBMClassifier.html
+        """
+        model_name = 'Light GBM'
+
+        classifier = LGBMClassifier()
+        classifier.fit(self.X_train, self.y_train)
+
+        y_pred = classifier.predict(self.X_test)
+
+        self.evaluate_model_performance(self.y_test, y_pred, model_name)
+
+        self.classifiers[model_name] = classifier
+
+    def cb(self):
+        """
+        Cat Boost (CatB)
+        https://catboost.ai/
+        A gradient-based model that uses gradient boosting algorithm over decision trees models.
+
+        Great quality without parameter tuning (self-tuning?) - provides great results with its default parameters
+        Categorical features support - automatically handles categorical data. Allows using non-numeric factors,
+            instead of having to pre-process your data or spend time and effort turning it to numbers.
+        Fast and scalable GPU version - has a fast (training & tuning) gradient-boosting implementation for GPU.
+            for large datasets, theres' a multi-card configuration.
+        Improved accuracy - a novel gradient-boosting scheme which reduce overfitting when constructing the models.
+        Fast prediction - the 'model applier' applies the trained model quickly and efficiently
+            even to latency-critical tasks.
+        """
+        model_name = 'Cat Boost'
+
+        classifier = CatBoostClassifier()
+        classifier.fit(self.X_train, self.y_train)
+
+        y_pred = classifier.predict(self.X_test)
+
+        self.evaluate_model_performance(self.y_test, y_pred, model_name)
+
+        self.classifiers[model_name] = classifier
 
     def lvq(self):
         """
@@ -334,6 +335,9 @@ class ClassificationModels:
         self.naive_bayes()
         self.dtc()
         self.rfc()
+        self.xgb()
+        self.lgbm()
+        self.cb()
         self.lvq()
 
     def all(self):

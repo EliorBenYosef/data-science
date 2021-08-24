@@ -3,9 +3,9 @@ from sklearn.linear_model import LinearRegression, Ridge, Lasso, LassoCV
 from sklearn.svm import SVR, LinearSVR
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
-# from xgboost import XGBRegressor
-# from lightgbm import LGBMRegressor
-# from catboost import CatBoostRegressor
+from xgboost import XGBRegressor
+from lightgbm import LGBMRegressor
+from catboost import CatBoostRegressor
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.metrics import r2_score, explained_variance_score, mean_squared_error
 
@@ -66,7 +66,7 @@ class RegressionModels:
     LinearModels
     """
 
-    def lin_reg(self, print_formula=True):
+    def lin_reg(self, print_formula=False):
         """
         (Simple / Multiple) Linear Regression (LinReg)
         utilizes Ordinary Least Squares (OLS), and attempts to draw a straight line that will best minimize
@@ -259,65 +259,93 @@ class RegressionModels:
 
         self.evaluate_model_performance(self.y_test, y_pred, model_name)
 
-    # def xgb(self):
-    #     """
-    #     XG Boost (XGB).
-    #     """
-    #     model_name = 'XG Boost'
-    #
-    #     regressor = XGBRegressor()
-    #     regressor.fit(self.X_train, self.y_train)
-    #
-    #     y_pred = regressor.predict(self.X_test)
-    #     self.predictions[model_name] = y_pred
-    #
-    #     if self.X_range is not None:
-    #         y_pred_fine = regressor.predict(self.X_range)
-    #         self.predictions_fine[model_name] = y_pred_fine
-    #
-    #     self.evaluate_model_performance(self.y_test, y_pred, model_name)
+    def xgb(self):
+        """
+        XG Boost (XGB).
+        """
+        model_name = 'XG Boost'
 
-    # def lgbm(self):
-    #     """
-    #     Light GBM (Light GBM)
-    #     a gradient-based model that uses tree-based learning algorithms.
-    #     """
-    #     model_name = 'Light GBM'
-    #
-    #     classifier = LGBMRegressor()
-    #     classifier.fit(self.X_train, self.y_train)
-    #
-    #     y_pred = classifier.predict(self.X_test)
-    #
-    #     self.evaluate_model_performance(self.y_test, y_pred, model_name)
-    #
-    #     self.classifiers[model_name] = classifier
+        regressor = XGBRegressor()
+        regressor.fit(self.X_train, self.y_train)
 
-    # def cb(self):
-    #     """
-    #     Cat Boost (CatB)
-    #     https://catboost.ai/
-    #     A gradient-based model that uses gradient boosting algorithm over decision trees models.
-    #
-    #     Great quality without parameter tuning (self-tuning?) - provides great results with its default parameters
-    #     Categorical features support - automatically handles categorical data. Allows using non-numeric factors,
-    #         instead of having to pre-process your data or spend time and effort turning it to numbers.
-    #     Fast and scalable GPU version - has a fast (training & tuning) gradient-boosting implementation for GPU.
-    #         for large datasets, theres' a multi-card configuration.
-    #     Improved accuracy - a novel gradient-boosting scheme which reduce overfitting when constructing the models.
-    #     Fast prediction - the 'model applier' applies the trained model quickly and efficiently
-    #         even to latency-critical tasks.
-    #     """
-    #     model_name = 'Cat Boost'
-    #
-    #     regressor = CatBoostRegressor()
-    #     regressor.fit(self.X_train, self.y_train)
-    #
-    #     y_pred = regressor.predict(self.X_test)
-    #     self.predictions[model_name] = y_pred
-    #
-    #     if self.X_range is not None:
-    #         y_pred_fine = regressor.predict(self.X_range)
-    #         self.predictions_fine[model_name] = y_pred_fine
-    #
-    #     self.evaluate_model_performance(self.y_test, y_pred, model_name)
+        y_pred = regressor.predict(self.X_test)
+        self.predictions[model_name] = y_pred
+
+        if self.X_range is not None:
+            y_pred_fine = regressor.predict(self.X_range)
+            self.predictions_fine[model_name] = y_pred_fine
+
+        self.evaluate_model_performance(self.y_test, y_pred, model_name)
+
+    def lgbm(self):
+        """
+        Light GBM (Light GBM)
+        a gradient-based model that uses tree-based learning algorithms.
+        https://lightgbm.readthedocs.io/en/latest/pythonapi/lightgbm.LGBMRegressor.html
+        """
+        model_name = 'Light GBM'
+
+        classifier = LGBMRegressor()
+        classifier.fit(self.X_train, self.y_train)
+
+        y_pred = classifier.predict(self.X_test)
+
+        self.evaluate_model_performance(self.y_test, y_pred, model_name)
+
+        self.classifiers[model_name] = classifier
+
+    def cb(self):
+        """
+        Cat Boost (CatB)
+        https://catboost.ai/
+        A gradient-based model that uses gradient boosting algorithm over decision trees models.
+
+        Great quality without parameter tuning (self-tuning?) - provides great results with its default parameters
+        Categorical features support - automatically handles categorical data. Allows using non-numeric factors,
+            instead of having to pre-process your data or spend time and effort turning it to numbers.
+        Fast and scalable GPU version - has a fast (training & tuning) gradient-boosting implementation for GPU.
+            for large datasets, theres' a multi-card configuration.
+        Improved accuracy - a novel gradient-boosting scheme which reduce overfitting when constructing the models.
+        Fast prediction - the 'model applier' applies the trained model quickly and efficiently
+            even to latency-critical tasks.
+        """
+        model_name = 'Cat Boost'
+
+        regressor = CatBoostRegressor()
+        regressor.fit(self.X_train, self.y_train)
+
+        y_pred = regressor.predict(self.X_test)
+        self.predictions[model_name] = y_pred
+
+        if self.X_range is not None:
+            y_pred_fine = regressor.predict(self.X_range)
+            self.predictions_fine[model_name] = y_pred_fine
+
+        self.evaluate_model_performance(self.y_test, y_pred, model_name)
+
+    """
+    AllModels
+    """
+
+    def all_linear(self):
+        self.lin_reg()
+        self.ridge_reg()
+        self.lin_svr()
+
+    def all_nonlinear(self):
+        self.poly_reg()
+        self.poly_reg(pol_deg=3)
+        self.poly_reg(pol_deg=4)
+        self.kernel_svr(kernel='poly', pol_deg=2)
+        self.kernel_svr(kernel='poly')
+        self.kernel_svr(kernel='poly', pol_deg=4)
+        self.kernel_svr()
+        self.dtr()
+        self.rfr()
+        self.xgb()
+        self.lgbm()
+        self.cb()
+
+    def all(self):
+        self.all_linear()
+        self.all_nonlinear()
