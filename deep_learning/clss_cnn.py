@@ -101,5 +101,5 @@ def predict_single(path, img_label):
     print(img_label, 'prediction:', classes[result[0][0]])
 
 
-predict_single('../datasets/per_field/cv/dog.jpg', 'dog')
-predict_single('../datasets/per_field/cv/cat.jpg', 'cat')
+predict_single('../datasets/per_field/cv/clss/dog.jpg', 'dog')
+predict_single('../datasets/per_field/cv/clss/cat.jpg', 'cat')

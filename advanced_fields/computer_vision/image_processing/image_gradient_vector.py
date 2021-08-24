@@ -47,7 +47,7 @@ print(f"Gradient Vector's Direction: {GV_theta}°")
 ##########################################
 
 # cv2 implementation
-img = cv2.imread('manu-2004.jpg')
+img = cv2.imread('../../../datasets/per_field/cv/manu-2004.jpg')
 # img = np.float32(img) / 255.0  # scaling
 
 GV_x_sobel = scale(cv2.Sobel(img, cv2.CV_32F, 1, 0, ksize=1)).astype('uint8')  # cv2.CV_8U, ksize=5

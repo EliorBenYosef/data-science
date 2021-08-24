@@ -1,4 +1,6 @@
 /.idea
 /ignore
-/datasets/per_field/cv/test_set
-/datasets/per_field/cv/training_set
+/datasets/per_field/cv/clss/test_set
+/datasets/per_field/cv/clss/training_set
+/advanced_fields/computer_vision/image_processing/exercises
+/advanced_fields/computer_vision/image_processing/libs_images

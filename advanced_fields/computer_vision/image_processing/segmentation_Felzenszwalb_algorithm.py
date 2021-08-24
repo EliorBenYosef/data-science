@@ -2,7 +2,7 @@ from skimage import io, segmentation
 from matplotlib import pyplot as plt
 from image_processing_kernels import scale
 
-img = scale(io.imread('manu-2013.jpg', as_gray=True)).astype('uint8')  # grayscale for simplicity
+img = scale(io.imread('../../../datasets/per_field/cv/manu-2013.jpg', as_gray=True)).astype('uint8')  # grayscale for simplicity
 
 segment_mask1 = segmentation.felzenszwalb(img, scale=100)
 segment_mask2 = segmentation.felzenszwalb(img, scale=1000)
