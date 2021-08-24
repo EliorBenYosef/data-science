@@ -1,5 +1,6 @@
-# Indoor Robotics Task:
-#   Calculate the overlap (AKA 'IOU') between two bounding boxes.
+"""
+Calculate the overlap (AKA 'IOU') between two bounding boxes
+"""
 
 
 def calculate_iou(bb1, bb2):
