@@ -8,21 +8,12 @@ import matplotlib.pyplot as plt
 import random
 
 
-def lin_clss_random():
+def lin_clss_random(X, y):
     """
     here, we:
     1. create the line formula (random-ish)
     2. count the number of point from class A and from class B above the line and beneath the line
     """
-    iris = datasets.load_iris()
-    X = iris.data
-    y = iris.target
-
-    # Select a subset (first two) of its features and classes.
-    #   in order to have a 2 dimensions - 2 classes database.
-    X = X[y != 2, :2]
-    y = y[y != 2]
-
     # Create the line formula (random-ish)
     a = - 1 + random.random() * 2
     x_min, x_max = np.min(X[:,0]), np.max(X[:,0])
@@ -72,19 +63,10 @@ def lin_clss_random():
     plt.show()
 
 
-def lin_clss_grid_search():
+def lin_clss_grid_search(X, y):
     """
     here, we optimize the model with grid search (by testing various possibilities).
     """
-    iris = datasets.load_iris()
-    X = iris.data
-    y = iris.target
-
-    # Select a subset (first two) of its features and classes.
-    #   in order to have a 2 dimensions - 2 classes database.
-    X = X[y != 2, :2]
-    y = y[y != 2]
-
     # optimize model with grid search (by testing various possibilities)
     best_a, best_b, best_classifier_correct_classifications, best_classifier_success_rate = 0, 0, 0, 0
 
@@ -136,3 +118,18 @@ def lin_clss_grid_search():
               % (best_a, '+' if not best_b < 0 else '', best_b, best_classifier_correct_classifications,
                  best_classifier_success_rate))
     plt.show()
+
+
+if __name__ == '__main__':
+    iris = datasets.load_iris()
+    X = iris.data
+    y = iris.target
+
+    # Select a subset (first two) of its features and classes.
+    #   in order to have a 2 dimensions - 2 classes database.
+    X = X[y != 2, :2]
+    y = y[y != 2]
+
+    lin_clss_random(X, y)
+    lin_clss_grid_search(X, y)
+
