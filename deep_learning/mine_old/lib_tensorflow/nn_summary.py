@@ -469,7 +469,7 @@ def display_activations(layers_names, layers_activations, layers_filters, enhanc
                 channel_image /= channel_image.std()
                 channel_image *= 64
                 channel_image += 128
-                channel_image = np.clip(channel_image, 0, 255).astype('uint8')
+                channel_image = np.clip(channel_image, 0, 255).astype(np.uint8)
 
                 # Displays the grid:
                 display_grid[row * layer_activation.shape[0]: (row + 1) * layer_activation.shape[0],

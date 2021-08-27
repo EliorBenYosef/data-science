@@ -1,3 +1,7 @@
+"""
+Image Processing Kernels
+"""
+
 import numpy as np
 import scipy.signal as sig
 import cv2
@@ -63,17 +67,17 @@ def plot_two_operators(GV_x_op1, GV_y_op1, GV_x_op2, GV_y_op2,
 # scipy implementation
 
 if __name__ == "__main__":
-    img = cv2.imread('../../../datasets/per_field/cv/manu-2004.jpg', cv2.IMREAD_GRAYSCALE)
+    img = cv2.imread('../../../datasets/per_field/cv/color_man_2004.jpg', cv2.IMREAD_GRAYSCALE)
 
     # Prewitt
     K_prewitt_x, K_prewitt_y = get_prewitt_kernels()
-    GV_x_prewitt = scale(sig.convolve2d(img, K_prewitt_x[::-1, ::-1], mode='same')).astype('uint8')
-    GV_y_prewitt = scale(sig.convolve2d(img, K_prewitt_y[::-1, ::-1], mode='same')).astype('uint8')
+    GV_x_prewitt = scale(sig.convolve2d(img, K_prewitt_x[::-1, ::-1], mode='same')).astype(np.uint8)
+    GV_y_prewitt = scale(sig.convolve2d(img, K_prewitt_y[::-1, ::-1], mode='same')).astype(np.uint8)
 
     # Sobel
     K_sobel_x, K_sobel_y = get_sobel_kernels()
-    GV_x_sobel = scale(sig.convolve2d(img, K_sobel_x[::-1, ::-1], mode='same')).astype('uint8')
-    GV_y_sobel = scale(sig.convolve2d(img, K_sobel_y[::-1, ::-1], mode='same')).astype('uint8')
+    GV_x_sobel = scale(sig.convolve2d(img, K_sobel_x[::-1, ::-1], mode='same')).astype(np.uint8)
+    GV_y_sobel = scale(sig.convolve2d(img, K_sobel_y[::-1, ::-1], mode='same')).astype(np.uint8)
 
     plot_two_operators(GV_x_prewitt, GV_y_prewitt, GV_x_sobel, GV_y_sobel)
 
@@ -83,8 +87,8 @@ if __name__ == "__main__":
 # cv2 implementation
 
 if __name__ == "__main__":
-    # img = cv2.imread('../../../datasets/per_field/cv/manu-2004.jpg', cv2.IMREAD_GRAYSCALE)
-    img = cv2.imread('../../../datasets/per_field/cv/manu-2004.jpg')
+    # img = cv2.imread('../../../datasets/per_field/cv/color_man_2004.jpg', cv2.IMREAD_GRAYSCALE)
+    img = cv2.imread('../../../datasets/per_field/cv/color_man_2004.jpg')
     # img = np.float32(img) / 255.0  # scaling
 
     # Prewitt
@@ -93,7 +97,7 @@ if __name__ == "__main__":
     GV_y_prewitt = cv2.filter2D(img, -1, K_prewitt_y)
 
     # Sobel
-    GV_x_sobel = scale(cv2.Sobel(img, cv2.CV_32F, 1, 0, ksize=1)).astype('uint8')  # cv2.CV_8U, ksize=5
-    GV_y_sobel = scale(cv2.Sobel(img, cv2.CV_32F, 0, 1, ksize=1)).astype('uint8')  # cv2.CV_8U, ksize=5
+    GV_x_sobel = scale(cv2.Sobel(img, cv2.CV_32F, 1, 0, ksize=1)).astype(np.uint8)  # cv2.CV_8U, ksize=5
+    GV_y_sobel = scale(cv2.Sobel(img, cv2.CV_32F, 0, 1, ksize=1)).astype(np.uint8)  # cv2.CV_8U, ksize=5
 
     plot_two_operators(GV_x_prewitt, GV_y_prewitt, GV_x_sobel, GV_y_sobel)

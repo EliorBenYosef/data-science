@@ -12,6 +12,7 @@ from PIL import Image
 import cv2
 import imageio
 import matplotlib.pyplot as plt
+
 # from urllib.request import urlopen
 # from IPython.display import clear_output
 # from time import sleep
@@ -76,7 +77,7 @@ def segment_person(img):
     return seg
 
 
-img_pil = Image.open('../../datasets/per_field/cv/people_in_office.jpg')
+img_pil = Image.open('../../../datasets/per_field/cv/color_office.jpg')
 img_pil = img_pil.convert('RGB')  # if the img has an additional alpha channel
 
 seg = segment_person(img_pil)
@@ -116,7 +117,7 @@ def obtain_tags(video):
 
 # url = 'https://raw.githubusercontent.com/intel-iot-devkit/sample-videos/master/preview/face-demographics-walking.gif'
 # video = Image.open(urlopen(url))
-video = Image.open('../../datasets/per_field/cv/walking.gif')
+video = Image.open('../../../datasets/per_field/cv/walking.gif')
 
 json = obtain_tags(video)
 
@@ -152,7 +153,7 @@ def visualize(jsonFile, video):
 
 # url = 'https://raw.githubusercontent.com/intel-iot-devkit/sample-videos/master/preview/face-demographics-walking.gif'
 # video = Image.open(urlopen(url))
-video = Image.open('../../datasets/per_field/cv/walking.gif')
+video = Image.open('../../../datasets/per_field/cv/walking.gif')
 
 images = []
 visualize(json, video)

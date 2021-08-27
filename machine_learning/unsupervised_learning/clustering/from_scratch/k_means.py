@@ -146,6 +146,7 @@ axarr[0, 0].imshow(A)
 axarr[0, 1].imshow(compress_image(32))
 axarr[1, 0].imshow(compress_image(16))
 axarr[1, 1].imshow(compress_image(8))
+plt.savefig('../results/K-Means Image Compression.png')
 plt.show()
 
 # we created some artifacts in the compression but the main features of the image are still there

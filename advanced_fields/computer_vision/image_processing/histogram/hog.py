@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 import scipy.signal as sig
-from image_processing_kernels import get_sobel_kernels
+from ..kernels import get_sobel_kernels
 
 from skimage.feature import hog
 from skimage import data, exposure
@@ -75,7 +75,7 @@ def plot_hog_single(magnitude_hist, bucket_names, title='cell'):
     plt.show()
 
 
-img = cv2.imread('../../../datasets/per_field/cv/manu-2004.jpg', cv2.IMREAD_GRAYSCALE)
+img = cv2.imread('../../../../datasets/per_field/cv/color_man_2004.jpg', cv2.IMREAD_GRAYSCALE)
 img = cv2.resize(img, (img.shape[1] - img.shape[1] % CELL_SIZE, img.shape[0] - img.shape[0] % CELL_SIZE))
 # img = cv2.normalize(img, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
 
@@ -129,7 +129,7 @@ def plot_hog_image(img, hog_img):
 
 
 img = data.astronaut()
-# img = cv2.imread('../../../datasets/per_field/cv/manu-2004.jpg')
+# img = cv2.imread('../../../datasets/per_field/cv/color_man_2004.jpg')
 
 fd, hog_img = hog(img, orientations=N_BUCKETS, pixels_per_cell=(CELL_SIZE, CELL_SIZE),
                   cells_per_block=(BLOCK_SIZE, BLOCK_SIZE), visualize=True, multichannel=True)

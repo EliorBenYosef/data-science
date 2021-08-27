@@ -1,6 +1,7 @@
-# https://github.com/opencv/opencv/tree/master/samples/python
+"""
+https://github.com/opencv/opencv/tree/master/samples/python
+"""
 
-from __future__ import print_function
 import cv2
 import numpy as np
 
@@ -40,7 +41,7 @@ def alignImages(im1, im2):
     # Find homography - calculate an accurate homography
     # A homography can be computed when we have 4 or more corresponding points in two images.
     homography, mask = cv2.findHomography(points1, points2, cv2.RANSAC)  # findHomography() utilizes a robust estimation technique called Random Sample Consensus (RANSAC) which produces the right result even in the presence of large number of bad matches
-    print("Estimated homography : \n", homography)  # Print estimated homography
+    print('Estimated homography : \n', homography)  # Print estimated homography
 
     # Use homography
     height, width, channels = im2.shape
@@ -50,7 +51,7 @@ def alignImages(im1, im2):
 
 
 if __name__ == '__main__':
-    imReference = cv2.imread("form.jpg", cv2.IMREAD_COLOR)  # Read reference\template image
-    im = cv2.imread("scanned-form.jpg", cv2.IMREAD_COLOR)  # Read image to be aligned
-    imReg = alignImages(im, imReference)  # Registered image will be resotred in imReg. The estimated homography will be stored in h.
-    cv2.imwrite("aligned.jpg", imReg)  # Write aligned image to disk.
+    imgReference = cv2.imread('../../../datasets/per_field/cv/form.jpg', cv2.IMREAD_COLOR)  # Read reference\template image
+    img = cv2.imread('../../../datasets/per_field/cv/scanned-form.jpg', cv2.IMREAD_COLOR)  # Read image to be aligned
+    imgReg = alignImages(img, imgReference)  # Registered image will be resotred in imgReg. The estimated homography will be stored in h.
+    cv2.imwrite('aligned.jpg', imgReg)  # Write aligned image to disk.

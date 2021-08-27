@@ -1,7 +1,8 @@
-# https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_imgproc/py_histograms/py_histogram_begins/py_histogram_begins.html
+"""
+https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_imgproc/py_histograms/py_histogram_begins/py_histogram_begins.html
+https://docs.opencv.org/3.1.0/d1/db7/tutorial_py_histogram_begins.html
+"""
 
-from __future__ import print_function
-from __future__ import division
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
@@ -22,12 +23,12 @@ from matplotlib import pyplot as plt
 histSize = 256  # number of bins
 histPixelValuesRange = [0, 256]  # can also be a tuple. the upper boundary is exclusive.
 
+
 ##################################################
 
 # Grayscale Histogram
 
 def show_grayscale_histogram(img):
-
     # [Compute the histogram]
     hist = cv2.calcHist([img], [0], None, [histSize], histPixelValuesRange)
 
@@ -51,18 +52,17 @@ def show_grayscale_histogram(img):
     cv2.imshow('calcHist Demo', histImage)
 
 
-img = cv2.imread('lady.jpg', 0)
+img = cv2.imread('../../../../datasets/per_field/cv/color_lady.jpg', 0)
 cv2.imshow('Source image', img)
 show_grayscale_histogram(img)
 cv2.waitKey()
-
 
 ##################################################
 
 # RGB Histogram
 # https://github.com/opencv/opencv/blob/master/samples/python/tutorial_code/Histograms_Matching/histogram_calculation/calcHist_Demo.py
 
-img = cv2.imread('lady.jpg')
+img = cv2.imread('../../../../datasets/per_field/cv/color_lady.jpg')
 bgr_planes = cv2.split(img)  # [Separate the image in 3 places ( B, G and R )]
 
 # [Compute the histograms]
@@ -84,15 +84,15 @@ cv2.normalize(r_hist, r_hist, alpha=0, beta=hist_h, norm_type=cv2.NORM_MINMAX)
 # [Draw for each channel]
 for i in range(1, histSize):
     cv2.line(histImage,
-             (bin_w *(i-1), hist_h - int(round(b_hist[i-1][0]))),
+             (bin_w * (i - 1), hist_h - int(round(b_hist[i - 1][0]))),
              (bin_w * i, hist_h - int(round(b_hist[i][0]))),
              (255, 0, 0), thickness=2)
     cv2.line(histImage,
-             (bin_w *(i-1), hist_h - int(round(g_hist[i-1][0]))),
+             (bin_w * (i - 1), hist_h - int(round(g_hist[i - 1][0]))),
              (bin_w * i, hist_h - int(round(g_hist[i][0]))),
              (0, 255, 0), thickness=2)
     cv2.line(histImage,
-             (bin_w *(i-1), hist_h - int(round(r_hist[i-1][0]))),
+             (bin_w * (i - 1), hist_h - int(round(r_hist[i - 1][0]))),
              (bin_w * i, hist_h - int(round(r_hist[i][0]))),
              (0, 0, 255), thickness=2)
 
@@ -101,12 +101,11 @@ cv2.imshow('Source image', img)
 cv2.imshow('calcHist Demo', histImage)
 cv2.waitKey()
 
-
 ##################################################
 
 # Grayscale Histogram - using Mask
 
-img = cv2.imread('lady.jpg', 0)
+img = cv2.imread('../../../../datasets/per_field/cv/color_lady.jpg', 0)
 
 # create a mask
 mask = np.zeros(img.shape[:2], np.uint8)
@@ -119,9 +118,9 @@ hist_full = cv2.calcHist([img], [0], None, [histSize], histPixelValuesRange)
 hist_mask = cv2.calcHist([img], [0], mask, [histSize], histPixelValuesRange)
 
 plt.subplot(221), plt.imshow(img, 'gray')
-plt.subplot(222), plt.imshow(mask,'gray')
+plt.subplot(222), plt.imshow(mask, 'gray')
 plt.subplot(223), plt.imshow(masked_img, 'gray')
 plt.subplot(224), plt.plot(hist_full), plt.plot(hist_mask)
-plt.xlim([0,256])
+plt.xlim([0, 256])
 
 plt.show()

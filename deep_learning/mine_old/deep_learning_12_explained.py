@@ -169,18 +169,18 @@ class Detector(object):
 
             ret, frame = cap.read()
 
-    def image_detector(self, imname, wait=0):
+    def image_detector(self, path, wait=0):
         detect_timer = Timer()
-        image = cv2.imread(imname)
+        img = cv2.imread(path)
 
         detect_timer.tic()
-        result = self.detect(image)
+        result = self.detect(img)
         detect_timer.toc()
         print('Average detecting time: {:.3f}s'.format(
             detect_timer.average_time))
 
-        self.draw_result(image, result)
-        cv2.imshow('Image', image)
+        self.draw_result(img, result)
+        cv2.imshow('Image', img)
         cv2.waitKey(wait)
 
 
@@ -203,8 +203,8 @@ def main():
     # detector.camera_detector(cap)
 
     # detect from image file
-    imname = 'test/person.jpg'
-    detector.image_detector(imname)
+    path = 'test/person.jpg'
+    detector.image_detector(path)
 
 
 if __name__ == '__main__':

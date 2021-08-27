@@ -2,7 +2,7 @@ import numpy as np
 import scipy.signal as sig
 import math
 import cv2
-from image_processing_kernels import scale
+from kernels import scale
 
 data = np.array([[0, 90, 0],
                  [105, 0, 55],
@@ -47,10 +47,10 @@ print(f"Gradient Vector's Direction: {GV_theta}°")
 ##########################################
 
 # cv2 implementation
-img = cv2.imread('../../../datasets/per_field/cv/manu-2004.jpg')
+img = cv2.imread('../../../datasets/per_field/cv/color_man_2004.jpg')
 # img = np.float32(img) / 255.0  # scaling
 
-GV_x_sobel = scale(cv2.Sobel(img, cv2.CV_32F, 1, 0, ksize=1)).astype('uint8')  # cv2.CV_8U, ksize=5
-GV_y_sobel = scale(cv2.Sobel(img, cv2.CV_32F, 0, 1, ksize=1)).astype('uint8')  # cv2.CV_8U, ksize=5
+GV_x_sobel = scale(cv2.Sobel(img, cv2.CV_32F, 1, 0, ksize=1)).astype(np.uint8)  # cv2.CV_8U, ksize=5
+GV_y_sobel = scale(cv2.Sobel(img, cv2.CV_32F, 0, 1, ksize=1)).astype(np.uint8)  # cv2.CV_8U, ksize=5
 
 GV_M, GV_theta = cv2.cartToPolar(GV_x_sobel, GV_y_sobel, angleInDegrees=True)
