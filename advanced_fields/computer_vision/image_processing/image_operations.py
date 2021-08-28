@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from imageio import imread, imwrite
 from skimage import io, transform
-from advanced_fields.computer_vision.image_processing.kernels import scale
+from advanced_fields.computer_vision.image_processing.kernels import scale_0_255
 
 
 input_uri = '../../../datasets/per_field/cv/color_cat.jpg'
@@ -47,7 +47,7 @@ plt.show()
 
 # Image Reading:
 img = io.imread(input_uri)
-img_grey = scale(io.imread(input_uri, as_gray=True)).astype(np.uint8)
+img_grey = scale_0_255(io.imread(input_uri, as_gray=True)).astype(np.uint8)
 
 # Image Resizing:
 img_resized = transform.resize(img, (300, 300), mode='symmetric', preserve_range=True).astype(np.uint8)

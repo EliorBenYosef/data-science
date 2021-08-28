@@ -4,10 +4,10 @@ Felzenszwalb algorithm
 
 from skimage import io, segmentation
 from matplotlib import pyplot as plt
-from ..image_processing.kernels import scale
+from ..image_processing.kernels import scale_0_255
 
 # grayscale for simplicity:
-img = scale(io.imread('../../../datasets/per_field/cv/color_man_2013.jpg', as_gray=True)).astype('uint8')
+img = scale_0_255(io.imread('../../../datasets/per_field/cv/color_man_2013.jpg', as_gray=True)).astype('uint8')
 
 segment_mask1 = segmentation.felzenszwalb(img, scale=100)
 segment_mask2 = segmentation.felzenszwalb(img, scale=1000)
