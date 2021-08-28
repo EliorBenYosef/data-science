@@ -1,9 +1,10 @@
 from PIL import Image
 
 
-def segment(img_pil_in, thrd):
-    """ Binary segmentation of image im by threshold thrd """
-
+def segment(img_pil_in, threshold):
+    """
+    Binary segmentation of image im by threshold
+    """
     width, height = img_pil_in.size
     img_pil_out = Image.new('1', (width, height))  # '1' means black & white (no grays)
     in_mat = img_pil_in.load()
@@ -11,7 +12,7 @@ def segment(img_pil_in, thrd):
 
     for x in range(width):
         for y in range(height):
-            if in_mat[x, y] >= thrd:
+            if in_mat[x, y] >= threshold:
                 out_mat[x, y] = 255  # white
             else:
                 out_mat[x, y] = 0  # black

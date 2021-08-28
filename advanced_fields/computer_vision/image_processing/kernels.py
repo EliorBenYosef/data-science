@@ -47,10 +47,8 @@ def scale_0_255(X):
     return X_rescaled
 
 
-def plot_two_operators(GV_x_op1, GV_y_op1, GV_x_op2, GV_y_op2,
-                       op1_name='Prewitt', op2_name='Sobel'):
-
-    fig = plt.figure(figsize=(10,10))
+def plot_two_operators(GV_x_op1, GV_y_op1, GV_x_op2, GV_y_op2, op1_name='Prewitt', op2_name='Sobel'):
+    fig = plt.figure(figsize=(10, 10))
     ax1 = fig.add_subplot(221)
     ax2 = fig.add_subplot(222)
     ax3 = fig.add_subplot(223)
@@ -70,9 +68,7 @@ def plot_two_operators(GV_x_op1, GV_y_op1, GV_x_op2, GV_y_op2,
 
 ##########################################
 
-# scipy implementation
-
-if __name__ == "__main__":
+def scipy_implementation():
     img = cv2.imread('../../../datasets/per_field/cv/color_man_2004.jpg', cv2.IMREAD_GRAYSCALE)
 
     # Prewitt
@@ -88,11 +84,7 @@ if __name__ == "__main__":
     plot_two_operators(GV_x_prewitt, GV_y_prewitt, GV_x_sobel, GV_y_sobel)
 
 
-##########################################
-
-# cv2 implementation
-
-if __name__ == "__main__":
+def cv2_implementation():
     # img = cv2.imread('../../../datasets/per_field/cv/color_man_2004.jpg', cv2.IMREAD_GRAYSCALE)
     img = cv2.imread('../../../datasets/per_field/cv/color_man_2004.jpg')
     # img = np.float32(img) / 255.0  # scaling
@@ -107,3 +99,10 @@ if __name__ == "__main__":
     GV_y_sobel = scale_0_255(cv2.Sobel(img, cv2.CV_32F, 0, 1, ksize=1)).astype(np.uint8)  # cv2.CV_8U, ksize=5
 
     plot_two_operators(GV_x_prewitt, GV_y_prewitt, GV_x_sobel, GV_y_sobel)
+
+
+##########################################
+
+if __name__ == "__main__":
+    scipy_implementation()
+    cv2_implementation()
