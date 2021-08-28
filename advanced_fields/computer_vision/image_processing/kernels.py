@@ -36,9 +36,15 @@ def get_sobel_kernels():
     return K_sobel_x, K_sobel_y
 
 
-def scale(arr):
-    # Note that plt.imshow() can handle the value scale well even without the scaling
-    return 255 * (arr - np.min(arr)) / (np.max(arr) - np.min(arr))
+def scale(X):
+    """
+    Convert values back to pixel values [0, 255] for the display purpose
+    Note that plt.imshow() can handle the value scale well even without the scaling
+    """
+    X_min, X_max = np.min(X), np.max(X)
+    X_norm = (X - X_min) / (X_max - X_min)
+    X_rescaled = 255 * X_norm
+    return X_rescaled
 
 
 def plot_two_operators(GV_x_op1, GV_y_op1, GV_x_op2, GV_y_op2,

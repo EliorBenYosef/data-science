@@ -46,14 +46,30 @@ plt.show()
 # skimage
 
 # Image Reading:
-img = scale(io.imread(input_uri))
-img_grey = scale(io.imread(input_uri, as_gray=True))
+img = io.imread(input_uri)
+img_grey = scale(io.imread(input_uri, as_gray=True)).astype(np.uint8)
 
 # Image Resizing:
-img_resized = transform.resize(img, (300, 300), mode='symmetric', preserve_range=True)
-img_grey_resized = transform.resize(img_grey, (300, 300), mode='symmetric', preserve_range=True)
+img_resized = transform.resize(img, (300, 300), mode='symmetric', preserve_range=True).astype(np.uint8)
+img_grey_resized = transform.resize(img_grey, (300, 300), mode='symmetric', preserve_range=True).astype(np.uint8)
 
 # Image Writing \ Saving:
-io.imsave(output_uri + 'cat_resized.jpg', img_resized.astype(np.uint8))
-io.imsave(output_uri + 'cat_grey.jpg', img_grey.astype(np.uint8))
-io.imsave(output_uri + 'cat_grey_resized.jpg', img_grey_resized.astype(np.uint8))
+io.imsave(output_uri + 'cat.jpg', img)
+io.imsave(output_uri + 'cat_resized.jpg', img_resized)
+io.imsave(output_uri + 'cat_grey.jpg', img_grey)
+io.imsave(output_uri + 'cat_grey_resized.jpg', img_grey_resized)
+
+fig, ax = plt.subplots(2, 2)
+ax[0, 0].imshow(img)
+ax[0, 0].set_title('Original')
+ax[0, 0].axis('off')
+ax[0, 1].imshow(img_resized)
+ax[0, 1].set_title('Resized')
+ax[0, 1].axis('off')
+ax[1, 0].imshow(img_grey, cmap='gray')
+ax[1, 0].set_title('Grey')
+ax[1, 0].axis('off')
+ax[1, 1].imshow(img_grey_resized, cmap='gray')
+ax[1, 1].set_title('Grey Resized')
+ax[1, 1].axis('off')
+plt.show()
