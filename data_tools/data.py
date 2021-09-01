@@ -2,7 +2,7 @@
 sklearn.datasets:
 dataset.DESCR - returns a details dexcription of the dataset.
 
-Data Preprocessing
+Data Pre-Processing
 """
 
 import numpy as np

@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 
 ####################################
 
-# Part 1 - Image Preprocessing
+# Part 1 - Image Pre-Processing
 #   https://keras.io/api/preprocessing/image/
 
 target_size = (64, 64)

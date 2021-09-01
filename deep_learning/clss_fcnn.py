@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 
 ####################################
 
-# Part 1 - Data Preprocessing
+# Part 1 - Data Pre-Processing
 
 dataset = ClassificationDataSets()
 dataset.get_churn_modelling()

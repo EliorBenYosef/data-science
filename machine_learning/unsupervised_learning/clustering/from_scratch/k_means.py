@@ -136,7 +136,7 @@ def compress_image(colors_num):  # colors_num = mapping the original image to on
 image_data = loadmat('../../../../datasets/per_type/matlab/bird_small.mat')  # pulling the pre-loaded raw pixel data.
 A = image_data['A']  # A.shape = (128L, 128L, 3L)
 
-# applying some preprocessing to the data:
+# applying some pre-processing to the data:
 A = A / 255.  # normalize value ranges
 X = A.reshape(A.shape[0] * A.shape[1], A.shape[2])  # reshape the array
 

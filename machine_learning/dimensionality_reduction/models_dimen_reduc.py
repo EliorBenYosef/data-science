@@ -188,7 +188,7 @@ class DimensionReducer:
     def lda(self):
         """
         Linear Discriminant Analysis (LDA) - supervised linear transformation technique
-        used as a data preprocessing step for classification tasks.
+        used as a data pre-processing step for classification tasks.
 
         The projection is done while retaining most of the information + maintaining the class-discriminatory information.
         Finds the principal component axes that maximize the class-separation.
@@ -258,9 +258,15 @@ class DimensionReducer:
 
     def svd(self):
         """
-        Singular Value Decomposition
+        Singular Value Decomposition (SVD)
 
         _, explained_variance_ratio, V = SVD(X, full_matrices=False)
+        """
+        pass
+
+    def som(self):
+        """
+        Self-Organizing Maps (SOM)
         """
         pass
 

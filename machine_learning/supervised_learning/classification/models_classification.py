@@ -235,15 +235,16 @@ class ClassificationModels:
 
         self.classifiers[model_name] = classifier
 
-    def rfc(self):
+    def rfc(self, n_trees=10):
         """
         Random Forest Classification (RFC)
-
         criterion - the function to measure the quality of the splits
-        """
-        model_name = 'Random Forest'
 
-        classifier = RandomForestClassifier(n_estimators=10, criterion='entropy', random_state=0, n_jobs=-1)  # 100
+        :param n_trees: n_estimators - number of trees. it's usually recommended to start with 10 trees.
+        """
+        model_name = f'Random Forest ({n_trees})'
+
+        classifier = RandomForestClassifier(n_estimators=n_trees, criterion='entropy', random_state=0, n_jobs=-1)  # 100
         classifier.fit(self.X_train, self.y_train)
 
         y_pred = classifier.predict(self.X_test)
@@ -255,6 +256,7 @@ class ClassificationModels:
     def xgb(self):
         """
         XG Boost (XGB).
+        https://towardsdatascience.com/catboost-vs-light-gbm-vs-xgboost-5f93620723db
         """
         model_name = 'XG Boost'
 
@@ -272,6 +274,7 @@ class ClassificationModels:
         Light GBM (Light GBM)
         A gradient-based model that uses gradient boosting algorithm over decision trees models.
         https://lightgbm.readthedocs.io/en/latest/pythonapi/lightgbm.LGBMClassifier.html
+        https://towardsdatascience.com/catboost-vs-light-gbm-vs-xgboost-5f93620723db
         """
         model_name = 'Light GBM'
 
@@ -288,6 +291,7 @@ class ClassificationModels:
         """
         Cat Boost (CatB)
         https://catboost.ai/
+        https://towardsdatascience.com/catboost-vs-light-gbm-vs-xgboost-5f93620723db
         A gradient-based model that uses gradient boosting algorithm over decision trees models.
 
         Great quality without parameter tuning (self-tuning?) - provides great results with its default parameters

@@ -243,7 +243,9 @@ class RegressionModels:
     def rfr(self, n_trees=10):
         """
         Random Forest Regression (RFR)
-        n_estimators - number of trees. it's usually recommended to start with 10 trees.
+        criterion - the function to measure the quality of the splits
+
+        :param n_trees: n_estimators - number of trees. it's usually recommended to start with 10 trees.
         """
         model_name = f'Random Forest ({n_trees})'
 
@@ -262,6 +264,7 @@ class RegressionModels:
     def xgb(self):
         """
         XG Boost (XGB).
+        https://towardsdatascience.com/catboost-vs-light-gbm-vs-xgboost-5f93620723db
         """
         model_name = 'XG Boost'
 
@@ -282,6 +285,7 @@ class RegressionModels:
         Light GBM (Light GBM)
         a gradient-based model that uses tree-based learning algorithms.
         https://lightgbm.readthedocs.io/en/latest/pythonapi/lightgbm.LGBMRegressor.html
+        https://towardsdatascience.com/catboost-vs-light-gbm-vs-xgboost-5f93620723db
         """
         model_name = 'Light GBM'
 
@@ -292,12 +296,11 @@ class RegressionModels:
 
         self.evaluate_model_performance(self.y_test, y_pred, model_name)
 
-        self.classifiers[model_name] = classifier
-
     def cb(self):
         """
         Cat Boost (CatB)
         https://catboost.ai/
+        https://towardsdatascience.com/catboost-vs-light-gbm-vs-xgboost-5f93620723db
         A gradient-based model that uses gradient boosting algorithm over decision trees models.
 
         Great quality without parameter tuning (self-tuning?) - provides great results with its default parameters

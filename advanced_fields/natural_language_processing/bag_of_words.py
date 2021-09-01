@@ -17,7 +17,7 @@ y = df.iloc[:, -1].values  # df['Liked'].values
 
 ##############################
 
-# 1. Data Preprocessing
+# 1. Data Pre-Processing
 
 # Cleaning the texts:
 X = get_clean_corpus(X)
