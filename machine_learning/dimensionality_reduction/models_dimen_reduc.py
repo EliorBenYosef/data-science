@@ -197,7 +197,7 @@ class DimensionReducer:
         Algorithm steps:
         1. Compute the d-dimensional mean vectors for the different classes from the dataset.
         2. Compute the scatter matrices (in-between-class and within-class scatter matrix).
-        3. Compute the eigenvectors (ee1,ee2,...,eed) and corresponding eigenvalues (λλ1,λλ2,...,λλd)
+        3. Compute the eigenvectors (e_1,e_2,...,e_d) and corresponding eigenvalues (λ_1,λ_2,...,λ_d)
             for the scatter matrices.
         4. Sort the eigenvectors by decreasing eigenvalues and choose k eigenvectors with the largest eigenvalues
             to form a d×k dimensional matrix WW (where every column represents an eigenvector).
