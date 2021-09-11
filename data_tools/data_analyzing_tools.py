@@ -32,20 +32,52 @@ def present_data(X, y):
     print('number of elements in each class: ', counts)
 
 
-def analyze_cat_var(df, cat_var, name):
+def analyze_cat_var(df, cat_var, name=None, horizontal=True, show=True):
     """
     Analyzes a single categorical variable
     :param df: the entire DataFrame object
     :param cat_var: the categorical variable's column name
     """
-    print(df[cat_var].unique(), '\n')
+    if name is None:
+        name = cat_var.lower()
 
-    print(df.groupby(cat_var).size(), '\n')
+    print(f'{cat_var} labels:')
+    print(np.unique(df[cat_var].values), '\n')  # sorted in cat_var ascending order
+    # print(df[cat_var].unique(), '\n')  # unsorted
+
+    print(f'{cat_var} labels + count:')  # cat_count_ser
+    print(df[cat_var].value_counts(), '\n')  # sorted in count descending order
+    # print(df.groupby(cat_var).size(), '\n')  # sorted in cat_var ascending order
 
     # Count plot (for a single feature = pandas Series object):
-    plot = sns.countplot(x=df[cat_var], label='Count')
-    plot.figure.savefig(f'results/{name}_count.png')
-    plt.show()
+    fig, ax = plt.subplots(figsize=(12, 6), constrained_layout=True)
+    if horizontal:
+        # put the categorical variable on the horizontal axis
+        sns.countplot(x=df[cat_var])
+        ax.yaxis.grid(True)  # Hide the horizontal gridlines
+    else:
+        # put the categorical variable on the vertical axis
+        sns.countplot(y=cat_var, data=df)
+        ax.xaxis.grid(True)  # Show the vertical gridlines
+    fig.savefig(f'results/{name}_count.png')
+    if show:
+        plt.show()
+
+    # Pie Chart
+    fig, ax = plt.subplots(figsize=(10, 9), constrained_layout=True)
+    # cat_count_ser = df.groupby(cat_var).size()  # sorted in cat_var ascending order
+    # cat_count_ser.plot(kind='pie', autopct='%.1f%%', ax=ax, textprops={'fontsize': 8})
+    cat_count_ser = df[cat_var].value_counts()  # sorted in count descending order
+    cat_count_ser_i_reset = cat_count_ser.reset_index()
+    plt.pie(x=cat_count_ser_i_reset[cat_var], labels=cat_count_ser_i_reset['index'], autopct='%.1f%%',
+            textprops={'fontsize': 8})
+            # explode=[0.05] * 4, pctdistance=0.5)
+    ax.set_ylabel('')
+    # plt.tight_layout()
+    plt.title(f'{cat_var} distribution')
+    fig.savefig(f'results/{name}_pie_chart.png')
+    if show:
+        plt.show()
 
 
 def analyze_num_vars(df, cat_var, name):
