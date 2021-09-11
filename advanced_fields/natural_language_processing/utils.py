@@ -1,6 +1,7 @@
 import re
 # from nltk import download
 # download('stopwords')
+import PyPDF2
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 # from unidecode import unidecode
@@ -69,3 +70,16 @@ class TextCleaner:
             text = self.remove_stopwords_and_apply_stemming(text)
 
         return text
+
+
+def read_pdf(file):
+    file_reader = PyPDF2.PdfFileReader(open(file, 'rb'))
+    text = []
+    for i in range(file_reader.getNumPages()):
+        page = file_reader.getPage(i)
+        t = page.extractText()
+        print(t)
+        text.append(t)
+    text = ' '.join(text)  # convert list back to string
+    text = text.replace('\n', '')
+    return text
