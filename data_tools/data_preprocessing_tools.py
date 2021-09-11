@@ -66,9 +66,8 @@ def encode_categorical_data(df, X, y, v_i, num_v_i, cat_v_i):
             better than labeling as: 0,1,2... so there's not a numerical order between the categories
             remainder='passthrough' - enables keeping the non-transformed columns
 
-    Encoding the Dependent Variable:
-        LabelEncoder - encodes a binary outcome as 0\1 (scalar)
-        CategoricalEncoder - deprecated?
+    Encoding the Dependent Variable (can be applied to a single column only - the target column!):
+        LabelEncoder - Index (scalar) Encoding
 
     note that the specific columns ([0], [1, 2]) are hard-coded here.
 
