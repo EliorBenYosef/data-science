@@ -60,6 +60,11 @@ class ClassificationModels:
             print(f'{model_name} Confusion Matrix: \n{performance[1]}')
 
     def print_models_clss_report(self):
+        """
+        - Precision (measuring exactness)
+        - Recall (measuring completeness)
+        - F1 Score (compromise between Precision and Recall)
+        """
         for model_name, performance in self.performances.items():
             print(f'{model_name} Classification report: \n{performance[2]}')
 
