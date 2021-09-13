@@ -1,0 +1,140 @@
+"""
+Resume Screening Task via Phrase Matching (unsupervised).
+
+candidate requirements:
+Deep Learning as a core competency
+other Machine Learning algorithms know how.
+more of Big Data or Data Engineering skill set (like experience in Scala, AWS, Dockers, Kubernetes etc.)
+
+the approach:
+· Have a dictionary or table which has all the various skill sets categorized
+    (i.e. the column ‘Deep Learning’ will contain the words: keras, tensorflow, CNN, RNN, etc.)
+
+NLP algorithm for every candidate / resume:
+1. parse the whole resume
+2. search for the words mentioned in the dictionary or table
+3. count the occurrence of the words under various category
+"""
+
+import os
+import pandas as pd
+from collections import Counter
+from spacy import load
+# import en_core_web_sm
+from spacy.matcher import PhraseMatcher
+from advanced_fields.natural_language_processing.utils import read_pdf, TextCleaner
+import matplotlib.pyplot as plt
+from utils import plot_hist_sum
+
+
+################################
+
+# run from terminal to download:
+# python -m spacy download en_core_web_sm  # Downloads best-matching package version for the spaCy installation
+# python -m spacy download en_core_web_sm-3.0.0 --direct  # Download exact package version
+
+nlp = load('en_core_web_sm')
+# nlp = en_core_web_sm.load()
+
+################################
+
+keyword_df = pd.read_csv('../../../datasets/per_field/nlp/categories_keywords.csv')
+categories = keyword_df['Category'].values
+matcher = PhraseMatcher(nlp.vocab)
+for i in range(len(categories)):
+    cat = keyword_df['Category'].values[i]
+    keywords = keyword_df['Keywords'].values[i].split('; ')
+    words = [nlp(keyword) for keyword in keywords]
+    matcher.add(cat, None, *words)
+
+tc = TextCleaner(apply_stemming=False)
+
+
+def perform_phrase_matching(text):
+    doc = nlp(text)
+
+    matches = []
+    for matcher_cat_id, start_word_i, end_word_i in matcher(doc):
+        cat = nlp.vocab.strings[matcher_cat_id]  # get the unicode ID, i.e. 'COLOR'
+        keyword = doc[start_word_i: end_word_i].text  # get the matched slice of the doc
+        matches.append((cat, keyword))
+
+    matches = [[cat, keyword, count] for (cat, keyword), count in Counter(matches).items()]
+    matches_df = pd.DataFrame(matches, columns=['Category', 'Keyword', 'Count'])
+    return matches_df
+
+
+def build_candidate_profile_df(file_path):
+    text = read_pdf(file_path)
+    text = tc.clean_resume(text)
+    matches_df = perform_phrase_matching(text)
+
+    # get candidate's name
+    file_name = os.path.splitext(os.path.basename(file_path))[0]
+    candidate_name = tc.clean_resume_file_name(file_name)
+    candidate_name_df = pd.DataFrame([candidate_name], columns=['Candidate'])
+
+    candidate_profile_df = pd.concat(
+        [candidate_name_df['Candidate'], matches_df['Category'], matches_df['Keyword'], matches_df['Count']],
+        axis=1)
+    candidate_profile_df['Candidate'].fillna(candidate_profile_df['Candidate'].iloc[0], inplace=True)
+    return candidate_profile_df
+
+
+def show_accumulated_bar_per_candidate(df):
+    plt.rcParams.update({'font.size': 10})
+    ax = df.plot.barh(title="Resume keywords by category", legend=False, figsize=(25, 7), stacked=True)
+    labels = []
+    for j in df.columns:
+        for i in df.index:
+            label = str(j) + ": " + str(df.loc[i][j])
+            labels.append(label)
+    patches = ax.patches
+    for label, rect in zip(labels, patches):
+        width = rect.get_width()
+        if width > 0:
+            x = rect.get_x()
+            y = rect.get_y()
+            height = rect.get_height()
+            ax.text(x + width / 2., y + height / 2., label, ha='center', va='center')
+    plt.show()
+
+################################
+
+
+if __name__ == '__main__':
+
+    df_initial = pd.DataFrame()
+    files_dir = '../../../datasets/per_field/nlp/pdf_resumes/'
+    files_paths = [os.path.join(files_dir, f) for f in os.listdir(files_dir)
+                   if os.path.isfile(os.path.join(files_dir, f))]
+    for i in range(len(files_paths)):
+        candidate_df = build_candidate_profile_df(files_paths[i])
+        df_initial = df_initial.append(candidate_df)
+
+    # Count keyword occurrences under each category:
+    df_final = df_initial['Keyword'].groupby([
+        df_initial['Candidate'], df_initial['Category']
+    ]).count().unstack(fill_value=0)  # fills nan and keeps dtype int64
+    df_final.to_csv('results/candidates_profiles.csv')
+    # df_final_no_i = df_final.reset_index()
+    # df_final = df_final_no_i.iloc[:, 1:]
+    # df_final.index = df_final_no_i['Candidate']
+
+    #########################################
+
+    # categories count sum visualization
+    #   show_accumulated_bar_per_candidate
+    #   show_multiple_bars_per_category_per_candidate
+
+    categories = df_final.axes[1].values
+    candidates = df_final.axes[0].values
+    data = df_final.to_numpy()
+
+    ylabel = 'Keywords Count'
+    xlabel = 'Categories'
+    title = 'Resume Keywords by Category'
+
+    plot_hist_sum(data, candidates, ylabel, xlabel, title, x_tick_labels=categories)
+    plt.savefig('results/category_keywords_count_histogram.png')
+    plt.show()

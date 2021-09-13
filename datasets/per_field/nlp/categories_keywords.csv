@@ -1,0 +1,10 @@
+Category,Keywords
+ML,machine learning; ml; supervised learning; classification; regression; unsupervised learning; clustering; dimensionality reduction; principal component analysis; pca; discriminant analysis; lda; qda; gda; independent component analysis; ica; singular value decomposition; svd; scikitlearn; sklearn; apyori; linear regression; linreg; logistic regression; logreg; k means; decision tree; decison trees; random forest; support vector machine; svm; naive bayes; naïve bayes; ensemble models; boltzman machine; xgboost; lightgbm; catboost
+DL,deep learning; dl; tensorflow; keras; pytorch; theano; neural network; neural networks; nn; cnn; rnn; lstm; gan; fcnn; fully connected; gpu; cuda
+CV,computer vision; cnn; convolution; convolutional; conv; image processing; signal processing; detection; yolo; segmentation; image; face; scikitimage; pillow; imageio; opencv; torchvision
+NLP,natural language processing; nlp; rnn; recurrent; sound; voice; topic modeling; latent dirichlet allocation; lda; named entity recognition; ner; pos tagging; word embedding; bag of words; tf-idf; word2vec; doc2vec; nltk; spacy; lsi; genism; nmf; cbow; skip gram; bert; sentiment analysis; chat bot; chatbot
+DE,data engineering; pandas; matplotlib; seaborn; amazon web services; aws; ec2; amazon redshift; s3; docker; kubernetes; scala; teradata; google big query; aws lambda; aws emr; hive; hadoop; sql
+Stats,statistics; statistical; probability; distribution; survival models; hypothesis testing; bayesian inference; factor analysis; forecasting; markov chain; monte carlo
+Python,python; flask; django; pandas; numpy; scikitlearn; sklearn; matplotlib; scipy; bokeh; statsmodel
+R,r; ggplot; shiny; cran; dplyr; tidyr; lubridate; knitr
+
