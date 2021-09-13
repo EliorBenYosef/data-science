@@ -1,7 +1,7 @@
 """
-models for data (text) vectorization
+Text Vectorization models:
 - Bag of Words
-- Tf-Idf
+- Term Frequency - Inverse Document Frequency (TF-IDF)
 - Word2Vec
 it's possible to use a combination of the above methods.
 
@@ -13,7 +13,7 @@ Note that the model can receive a 'stop_words' argument:
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
 
-def bag_of_words(X, manual_stopwords=True):
+def bag_of_words(X, stopwords_removed_manually=True):
     """
     Bag of Words
         creating a sparse feature matrix containing the clean texts’ entire words count.
@@ -25,7 +25,7 @@ def bag_of_words(X, manual_stopwords=True):
     # word_vectorizer = CountVectorizer(max_features=round(n_words * 0.95))
 
     # Option 2 - taking the words with a minimum count of 2:
-    if manual_stopwords:
+    if stopwords_removed_manually:
         word_vectorizer = CountVectorizer(min_df=2)
     else:
         word_vectorizer = CountVectorizer(min_df=2, stop_words='english')
@@ -34,11 +34,11 @@ def bag_of_words(X, manual_stopwords=True):
     return word_features, word_vectorizer
 
 
-def tf_idf(X, manual_stopwords=True):
+def tf_idf(X, stopwords_removed_manually=True):
     """
     Term Frequency - Inverse Document Frequency (TF-IDF)
     """
-    if manual_stopwords:
+    if stopwords_removed_manually:
         word_vectorizer = TfidfVectorizer(sublinear_tf=True, max_features=1500)
     else:
         word_vectorizer = TfidfVectorizer(sublinear_tf=True, max_features=1500, stop_words='english')
@@ -50,6 +50,7 @@ def word_2_vec():
     """
     Word2Vec
     """
+    # TODO: complete
     pass
 
 

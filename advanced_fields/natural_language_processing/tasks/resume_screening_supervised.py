@@ -1,5 +1,6 @@
 """
-Resume Screening Task
+Resume Screening Task via Text Vectorization (supervised).
+Classifying resumes into job categories.
 
 Dataset shape: (962, 2)
 Dataset columns:
@@ -40,15 +41,15 @@ text_var = 'Resume'
 le = LabelEncoder()
 df[cat_var] = le.fit_transform(df[cat_var])
 
-manual_stopwords = True
+remove_stopwords_manually = True
 
 # Data Cleaning (cleaning the texts):
-tc = TextCleaner(manual_stopwords)
+tc = TextCleaner(remove_stopwords_manually)
 df[text_var + '_clean'] = df[text_var].apply(lambda x: tc.clean_resume(x))
 
 # Data Vectorization:
 X = df[text_var + '_clean'].values
-word_features, word_vectorizer = tf_idf(X, manual_stopwords)
+word_features, word_vectorizer = tf_idf(X, remove_stopwords_manually)
 X = word_features.toarray()
 
 y = df[cat_var].values
