@@ -33,7 +33,7 @@ def calculate_iou(bb1, bb2):
     return iou
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     pred = (50, 50, 90, 100)
     target = (70, 80, 120, 150)
     print(calculate_iou(pred, target))

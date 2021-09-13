@@ -277,7 +277,7 @@ class DimensionReducer:
         self.f_ica()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     # df = pd.read_csv('../../datasets/per_field/usl/dimensionality_reduction/Wine.csv')
     # X, y = df.iloc[:, :-1].values, df.iloc[:, -1].values
     # y_label = df.columns.values[-1]

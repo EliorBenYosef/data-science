@@ -103,6 +103,6 @@ def cv2_implementation():
 
 ##########################################
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     scipy_implementation()
     cv2_implementation()
