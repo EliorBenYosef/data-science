@@ -81,14 +81,14 @@ def build_candidate_profile_df(file_path):
     return candidate_profile_df
 
 
-def show_accumulated_bar_per_candidate(df):
-    plt.rcParams.update({'font.size': 10})
-    ax = df.plot.barh(title="Resume keywords by category", legend=False, figsize=(25, 7), stacked=True)
+def show_accumulated_bar_per_candidate(df, title):
+    ax = df.plot.barh(title=title, legend=False, figsize=(25, 7), stacked=True)
+
     labels = []
-    for j in df.columns:
-        for i in df.index:
-            label = str(j) + ": " + str(df.loc[i][j])
-            labels.append(label)
+    for cat in df.columns:  # columns first
+        for candidate in df.index:  # rows second
+            labels.append(f'{cat} {df.loc[candidate][cat]}')
+
     patches = ax.patches
     for label, rect in zip(labels, patches):
         width = rect.get_width()
@@ -97,7 +97,26 @@ def show_accumulated_bar_per_candidate(df):
             y = rect.get_y()
             height = rect.get_height()
             ax.text(x + width / 2., y + height / 2., label, ha='center', va='center')
+
+    plt.rcParams.update({'font.size': 10})
+    plt.xticks(())
+    plt.tight_layout()
+    plt.savefig('results/category_keywords_accumulated_bar_per_candidate.png')
     plt.show()
+
+
+def show_multiple_bars_per_category_per_candidate(df, title):
+    categories = df_final.columns.values
+    candidates = df_final.index.values
+    data = df.to_numpy()
+
+    ylabel = 'Keywords Count'
+    xlabel = 'Categories'
+
+    plot_hist_sum(data, candidates, ylabel, xlabel, title, x_tick_labels=categories)
+    plt.savefig('results/category_keywords_count_histogram.png')
+    plt.show()
+
 
 ################################
 
@@ -121,20 +140,7 @@ if __name__ == '__main__':
     # df_final = df_final_no_i.iloc[:, 1:]
     # df_final.index = df_final_no_i['Candidate']
 
-    #########################################
-
-    # categories count sum visualization
-    #   show_accumulated_bar_per_candidate
-    #   show_multiple_bars_per_category_per_candidate
-
-    categories = df_final.axes[1].values
-    candidates = df_final.axes[0].values
-    data = df_final.to_numpy()
-
-    ylabel = 'Keywords Count'
-    xlabel = 'Categories'
+    # categories count sum visualization:
     title = 'Resume Keywords by Category'
-
-    plot_hist_sum(data, candidates, ylabel, xlabel, title, x_tick_labels=categories)
-    plt.savefig('results/category_keywords_count_histogram.png')
-    plt.show()
+    show_accumulated_bar_per_candidate(df_final, title)
+    show_multiple_bars_per_category_per_candidate(df_final, title)
