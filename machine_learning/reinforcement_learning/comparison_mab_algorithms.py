@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 from algorithms_mab import ucb, ts
 import random
 import numpy as np
+from utils import plot_hist_sum, plot_hist_count
 
 d = 10  # the problem dimensionality (number of arms = ads).
 
@@ -36,31 +37,19 @@ ads_selected_ts = ts(dist_p, d, N)
 
 # plot Histogram:
 
-# bins = np.linspace(1, d, d)
-bins = np.arange(d) + 1
+mab_algorithms = ['Upper Confidence Bound', 'Thompson Sampling']
+data = np.array([ads_selected_ucb, ads_selected_ts])
 
-fig, ax = plt.subplots(figsize=(10, 6))
+xlabel = 'Ads'
+ylabel = 'Number of selections'
+title = f'Histogram of Ads Selections\np = {dist_p}'
+# bars_type = 'adjacent'
+bars_type = 'overlapping'
 
 # # Histogram of count (ads_selected):
-# # Option 1 (adjacent bars):
-# ax.hist([ads_selected_ucb, ads_selected_ts], bins,
-#         label=['Upper Confidence Bound', 'Thompson Sampling'])
-# # Option 2 (overlapping\superimposed bars):
-# ax.hist(ads_selected_ucb, bins, alpha=0.5, label='Upper Confidence Bound')
-# ax.hist(ads_selected_ts, bins, alpha=0.5, label='Thompson Sampling')
-
+# plot_hist_count(data, mab_algorithms, ylabel, xlabel, title, adjacent_bars=bars_type == 'adjacent')
 # Histogram of sum (n_selections) = Bars:
-# Option 1 (adjacent bars):
-ax.bar(bins - 0.2, ads_selected_ucb, width=0.4, align='center', label='Upper Confidence Bound')
-ax.bar(bins + 0.2, ads_selected_ts, width=0.4, align='center', label='Thompson Sampling')
-# # Option 2 (overlapping\superimposed bars):
-# ax.bar(bins, ads_selected_ucb, alpha=0.75, width=0.8, align='center', label='Upper Confidence Bound')
-# ax.bar(bins, ads_selected_ts, alpha=0.75, width=0.8, align='center', label='Thompson Sampling')
+plot_hist_sum(data, mab_algorithms, ylabel, xlabel, title, adjacent_bars=bars_type == 'adjacent')
 
-ax.legend(loc='upper left')
-ax.set_xlabel('Ads')
-ax.set_ylabel('Number of selections')
-ax.set_xticks(bins)
-ax.set_title(f'Histogram of Ads Selections\np = {dist_p}')
-
+plt.savefig(f'results/MAB_algo_{bars_type}.png')
 plt.show()
