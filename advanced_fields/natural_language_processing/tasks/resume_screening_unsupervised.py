@@ -82,13 +82,13 @@ def build_candidate_profile_df(file_path):
 
 
 def show_accumulated_bar_per_candidate(df, title):
-    ax = df.plot.barh(title=title, legend=False, figsize=(25, 7), stacked=True)
+    ax = df.plot.barh(title=title, legend=False, figsize=(18, 7), stacked=True)
 
+    # Add text to the bars:
     labels = []
     for cat in df.columns:  # columns first
         for candidate in df.index:  # rows second
-            labels.append(f'{cat} {df.loc[candidate][cat]}')
-
+            labels.append(f'{cat}\n{df.loc[candidate][cat]}')
     patches = ax.patches
     for label, rect in zip(labels, patches):
         width = rect.get_width()
@@ -97,9 +97,8 @@ def show_accumulated_bar_per_candidate(df, title):
             y = rect.get_y()
             height = rect.get_height()
             ax.text(x + width / 2., y + height / 2., label, ha='center', va='center')
-
     plt.rcParams.update({'font.size': 10})
-    plt.xticks(())
+
     plt.tight_layout()
     plt.savefig('results/category_keywords_accumulated_bar_per_candidate.png')
     plt.show()
