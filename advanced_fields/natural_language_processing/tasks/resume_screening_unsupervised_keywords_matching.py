@@ -1,19 +1,10 @@
 """
-Resume Screening Task via Phrase Matching (unsupervised).
-
-candidate requirements:
-Deep Learning as a core competency
-other Machine Learning algorithms know how.
-more of Big Data or Data Engineering skill set (like experience in Scala, AWS, Dockers, Kubernetes etc.)
-
-the approach:
-· Have a dictionary or table which has all the various skill sets categorized
-    (i.e. the column ‘Deep Learning’ will contain the words: keras, tensorflow, CNN, RNN, etc.)
-
-NLP algorithm for every candidate / resume:
-1. parse the whole resume
-2. search for the words mentioned in the dictionary or table
-3. count the occurrence of the words under various category
+(Unsupervised) Resume Screening Task via Phrase Matching.
+1. Text Cleaning
+2. Keywords Matching (Unsupervised)
+    - search for the keywords in the resume
+    - count the keywords occurrences
+    - sum the keywords occurrences for each category
 """
 
 import os
@@ -38,6 +29,8 @@ nlp = load('en_core_web_sm')
 
 ################################
 
+# keyword_df - should contain all skill sets for each category:
+#   (can also be a dictionary or table)
 keyword_df = pd.read_csv('../../../datasets/per_field/nlp/categories_keywords.csv')
 categories = keyword_df['Category'].values
 matcher = PhraseMatcher(nlp.vocab)

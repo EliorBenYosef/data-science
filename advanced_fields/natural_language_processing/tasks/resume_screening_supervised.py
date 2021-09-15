@@ -1,6 +1,8 @@
 """
-Resume Screening Task via Text Vectorization (supervised).
-Classifying resumes into job categories.
+(Supervised) Resume Screening (Classification) Task (into job categories) via Text Vectorization.
+1. Text Cleaning
+1. Text Vectorization
+2. Multiclass Classification (Supervised) - classifying labeled resumes into job categories
 
 Dataset shape: (962, 2)
 Dataset columns:
@@ -13,14 +15,14 @@ from data_tools.data_analyzing_tools import analyze_df, analyze_cat_var
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from advanced_fields.natural_language_processing.utils import TextCleaner
-from advanced_fields.natural_language_processing.models.data_vectorization import tf_idf
+from advanced_fields.natural_language_processing.models.text_vectorization import tf_idf
 
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import metrics
 
 
-df = pd.read_csv('../../../datasets/per_field/nlp/UpdatedResumeDataSet.csv', encoding='utf-8')
+df = pd.read_csv('../../../datasets/per_field/nlp/labeled_resumes.csv', encoding='utf-8')
 cat_var = 'Category'
 text_var = 'Resume'
 
@@ -43,14 +45,13 @@ df[cat_var] = le.fit_transform(df[cat_var])
 
 remove_stopwords_manually = True
 
-# Data Cleaning (cleaning the texts):
+# Text Cleaning:
 tc = TextCleaner(remove_stopwords_manually)
 df[text_var + '_clean'] = df[text_var].apply(lambda x: tc.clean_resume(x))
 
-# Data Vectorization:
+# Text Vectorization:
 X = df[text_var + '_clean'].values
-word_features, word_vectorizer = tf_idf(X, remove_stopwords_manually)
-X = word_features.toarray()
+X, word_vectorizer = tf_idf(X, remove_stopwords_manually)
 
 y = df[cat_var].values
 

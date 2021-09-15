@@ -6,12 +6,12 @@ Classifying reviews: Negative (0) / Positive (1)
 import pandas as pd
 from csv import QUOTE_NONE
 from advanced_fields.natural_language_processing.utils import TextCleaner
-from advanced_fields.natural_language_processing.models.data_vectorization import bag_of_words
+from advanced_fields.natural_language_processing.models.text_vectorization import bag_of_words
 from sklearn.model_selection import train_test_split
 from machine_learning.supervised_learning.classification.models_classification import ClassificationModels
 
 # csv.QUOTE_NONE - ignore (remove) the quotes in the text
-df = pd.read_csv('../../../datasets/per_field/nlp/Restaurant_Reviews.tsv', delimiter='\t', quoting=QUOTE_NONE)
+df = pd.read_csv('../../../datasets/per_field/nlp/labeled_reviews.tsv', delimiter='\t', quoting=QUOTE_NONE)
 cat_var = 'Liked'  # No (0) / Yes (1)
 text_var = 'Review'
 
@@ -19,15 +19,14 @@ text_var = 'Review'
 
 # 1. Data Pre-Processing
 
-# Data Cleaning (cleaning the texts):
+# Text Cleaning:
 tc = TextCleaner()
 tc.stop_words.remove('not')  # crucial for sentiment analysis
 df[text_var + '_clean'] = df[text_var].apply(lambda x: tc.clean_review(x))
 
-# Data Vectorization:
+# Text Vectorization:
 X = df[text_var + '_clean'].values
-word_features, word_vectorizer = bag_of_words(X)
-X = word_features.toarray()
+X, word_vectorizer = bag_of_words(X)
 
 y = df[cat_var].values
 
