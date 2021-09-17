@@ -91,6 +91,5 @@ def word_2_vec():
 # def get_stemmed_words(doc):
 #     return (wnl.lemmatize(word) for word in word_vectorizer_analyzer(doc) if word not in set(stopwords.words('english')))
 #
-# # jd_vec = req_vector:
 # jd_vec, word_vectorizer = tf_idf(jd_keywords, analyzer=get_stemmed_words)
 # # jd_vec, word_vectorizer = bag_of_words(jd_keywords, analyzer=get_stemmed_words)

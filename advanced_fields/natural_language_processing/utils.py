@@ -430,7 +430,7 @@ class TextExtractor:
 if __name__ == '__main__':
     tc = TextCleaner()
 
-    jd_text = TextExtractor.read_docx('../../datasets/per_field/nlp/job_description.docx')  # req_doc_text, compare_doc
+    jd_text = TextExtractor.read_docx('../../datasets/per_field/nlp/job_description.docx')
     jd_text_lem_w = tc.clean_job_description(jd_text)
     jd_text_lem_t = tc.get_clean_lemmatized_text(jd_text)
     jd_keywords = tc.extract_keywords(jd_text)
