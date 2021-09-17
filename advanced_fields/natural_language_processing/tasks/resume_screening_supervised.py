@@ -15,7 +15,7 @@ from data_tools.data_analyzing_tools import analyze_df, analyze_cat_var
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from advanced_fields.natural_language_processing.utils import TextCleaner
-from advanced_fields.natural_language_processing.models.text_vectorization import tf_idf
+from advanced_fields.natural_language_processing.models.text_vectorization import Vectorizer
 
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.neighbors import KNeighborsClassifier
@@ -51,7 +51,8 @@ df[text_var + '_clean'] = df[text_var].apply(lambda x: tc.clean_resume(x))
 
 # Text Vectorization:
 X = df[text_var + '_clean'].values
-X, word_vectorizer = tf_idf(X, max_features=1500, sublinear_tf=True, stopwords_removed_manually=remove_stopwords_manually)
+vactorizer = Vectorizer(X, max_features=1500, stopwords_removed_manually=remove_stopwords_manually)
+X = vactorizer.tf_idf(sublinear_tf=True)
 
 y = df[cat_var].values
 
