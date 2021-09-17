@@ -51,7 +51,7 @@ df[text_var + '_clean'] = df[text_var].apply(lambda x: tc.clean_resume(x))
 
 # Text Vectorization:
 X = df[text_var + '_clean'].values
-X, word_vectorizer = tf_idf(X, remove_stopwords_manually)
+X, word_vectorizer = tf_idf(X, max_features=1500, sublinear_tf=True, stopwords_removed_manually=remove_stopwords_manually)
 
 y = df[cat_var].values
 

@@ -13,7 +13,7 @@ from collections import Counter
 from spacy import load
 # import en_core_web_sm
 from spacy.matcher import PhraseMatcher
-from advanced_fields.natural_language_processing.utils import read_pdf, TextCleaner
+from advanced_fields.natural_language_processing.utils import TextExtractor, TextCleaner
 import matplotlib.pyplot as plt
 from utils import plot_hist_sum
 
@@ -40,7 +40,7 @@ for i in range(len(categories)):
     words = [nlp(keyword) for keyword in keywords]
     matcher.add(cat, None, *words)
 
-tc = TextCleaner(apply_stemming=False)
+tc = TextCleaner(apply_normalization=False)  # stemming hinders keywords matching, i.e. 'machine learning' --> machine learn
 
 
 def perform_phrase_matching(text):
@@ -58,7 +58,7 @@ def perform_phrase_matching(text):
 
 
 def build_candidate_profile_df(file_path):
-    text = read_pdf(file_path)
+    text = TextExtractor.read_pdf(file_path)
     text = tc.clean_resume(text)
     matches_df = perform_phrase_matching(text)
 
@@ -119,8 +119,8 @@ if __name__ == '__main__':
     files_dir = '../../../datasets/per_field/nlp/pdf_resumes/'
     files_paths = [os.path.join(files_dir, f) for f in os.listdir(files_dir)
                    if os.path.isfile(os.path.join(files_dir, f))]
-    for i in range(len(files_paths)):
-        candidate_df = build_candidate_profile_df(files_paths[i])
+    for file_path in files_paths:
+        candidate_df = build_candidate_profile_df(file_path)
         df_initial = df_initial.append(candidate_df)
 
     # Count keyword occurrences under each category:

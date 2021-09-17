@@ -26,7 +26,7 @@ df[text_var + '_clean'] = df[text_var].apply(lambda x: tc.clean_review(x))
 
 # Text Vectorization:
 X = df[text_var + '_clean'].values
-X, word_vectorizer = bag_of_words(X)
+X, word_vectorizer = bag_of_words(X, min_df=2)
 
 y = df[cat_var].values
 
