@@ -28,20 +28,21 @@ text_var = 'Resume'
 
 ###################################
 
-# # 0. Exploratory Data Analysis:
+# # Exploratory Data Analysis:
 # analyze_df(resumeDataSet)
 # analyze_cat_var(resumeDataSet, cat_var, horizontal=False, show=False)
 
 ###################################
 
-# 1. Data Pre-Processing
+# Data Pre-Processing
 
 # Encoding categorical data
 #   Encoding the cat_var column using LabelEncoding
 #       (since it's our target label column, even though it contains ‘Nominal’ data)
 #   each category will become a class and we will be building a multiclass classification model.
+y = df[cat_var].values
 le = LabelEncoder()
-df[cat_var] = le.fit_transform(df[cat_var])
+y = le.fit_transform(y)
 
 remove_stopwords_manually = True
 
@@ -49,22 +50,26 @@ remove_stopwords_manually = True
 tc = TextCleaner(remove_stopwords_manually)
 df[text_var + '_clean'] = df[text_var].apply(lambda x: tc.clean_resume(x))
 
-# Text Vectorization:
 X = df[text_var + '_clean'].values
-vactorizer = Vectorizer(X, max_features=1500, stopwords_removed_manually=remove_stopwords_manually)
-X = vactorizer.tf_idf(sublinear_tf=True)
-
-y = df[cat_var].values
 
 ##############################
 
-# 2. Dataset Splitting
+# Dataset Splitting
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
 ##############################
 
-# 3. Multiclass Classification:
+# Data Pre-Processing
+
+# Text Vectorization:
+vactorizer = Vectorizer(X_train, max_features=1500, stopwords_removed_manually=remove_stopwords_manually)
+X_train = vactorizer.tf_idf(sublinear_tf=True)
+X_test = vactorizer.word_vectorizer.transform(X_test).toarray()
+
+##############################
+
+# Multiclass Classification:
 #   building the model using: ‘One vs Rest’ method using a ‘KNeighborsClassifier’ model as an estimator.
 
 classifier = OneVsRestClassifier(estimator=KNeighborsClassifier())
@@ -75,5 +80,7 @@ y_pred = classifier.predict(X_test)
 print(f'Accuracy (training): {classifier.score(X_train, y_train):.2f}')
 print(f'Accuracy (test): {classifier.score(X_test, y_test):.2f}', '\n')
 # detailed classification report for each class:
-print(le.classes_)  # print the actual labels
+# print(le.classes_, '\n')  # print the actual labels
+print([f'{i} {cls}' for i, cls in enumerate(le.classes_)])  # print the actual labels
+print('\n')
 print(f'n Classification Report (test): {metrics.classification_report(y_test, y_pred)}')
