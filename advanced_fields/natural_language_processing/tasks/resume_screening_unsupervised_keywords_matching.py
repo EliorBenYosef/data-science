@@ -62,9 +62,7 @@ def build_candidate_profile_df(file_path):
     text = tc.clean_resume(text)
     matches_df = perform_phrase_matching(text)
 
-    # get candidate's name
-    file_name = os.path.splitext(os.path.basename(file_path))[0]
-    candidate_name = tc.clean_resume_file_name(file_name)
+    candidate_name = tc.get_candidate_name_from_filename(file_path)
     candidate_name_df = pd.DataFrame([candidate_name], columns=['Candidate'])
 
     candidate_profile_df = pd.concat(

@@ -7,6 +7,8 @@ from nltk.stem.wordnet import WordNetLemmatizer
 from sklearn.metrics.pairwise import cosine_similarity, cosine_distances
 from nltk.tag import pos_tag
 from nltk.tokenize import word_tokenize
+import numpy as np
+import os
 
 
 # from nltk import download
@@ -315,14 +317,20 @@ class TextCleaner:
         return text
 
     @staticmethod
-    def clean_resume_file_name(text):
+    def get_candidate_name_from_filename(file_path):
+        file_name = os.path.splitext(os.path.basename(file_path))[0]
+        text = file_name
+
+        # clean_resume_file_name:
         text = text.lower()
         text = text.replace('resume', '').replace('cv', '')
         text = text.replace('english', '').replace('eng', '')
         text = re.sub('[^a-zA-Z ]', repl=' ', string=text)  # remove non-letters characters (i.e. punctuation)
         text = re.sub(' +', ' ', text)  # remove extra whitespace
         text = re.sub(r"^\s+|\s+$", "", text)  # remove both
-        return text
+
+        candidate_name = text.title()
+        return candidate_name
 
 
 class SimilarityMetrics:
@@ -356,10 +364,10 @@ class SimilarityMetrics:
         """
         Cosine similarity
         """
-        sim = []
+        similarity_list = []
         for v in self.v_compare:
-            sim.append(cosine_similarity(self.v_base, v)[0][0])
-        return sim
+            similarity_list.append(cosine_similarity(self.v_base, np.expand_dims(v, axis=0))[0][0])
+        return similarity_list
 
     def l1_dist(self):
         """

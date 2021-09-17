@@ -11,8 +11,8 @@
 import os
 import pandas as pd
 from advanced_fields.natural_language_processing.utils import TextExtractor, TextCleaner, SimilarityMetrics
-from advanced_fields.natural_language_processing.models.text_vectorization import tf_idf, bag_of_words
-
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+import numpy as np
 
 tc = TextCleaner()
 
@@ -29,27 +29,22 @@ if __name__ == '__main__':
         resume_text = TextExtractor.read_pdf(file_path)
         resume_text_clean = tc.clean_resume(resume_text)
 
-        # get candidate's name
-        file_name = os.path.splitext(os.path.basename(file_path))[0]
-        candidate_name = tc.clean_resume_file_name(file_name)
-
+        candidate_name = tc.get_candidate_name_from_filename(file_path)
         candidate_df = pd.DataFrame([[candidate_name, resume_text, resume_text_clean]],
                                     columns=['Candidate', 'Resume', 'Resume_Clean'])
         df = df.append(candidate_df)
 
-    jd_vec, word_vectorizer = tf_idf(jd_keywords)  # bag_of_words(jd_keywords)
+    word_vectorizer = TfidfVectorizer(vocabulary=jd_keywords)
+    # print('Features:', word_vectorizer.get_feature_names())
 
-    resumes_vec = word_vectorizer.transform(df['Resume Clean'].values).toarray()
+    jd_keywords_text = np.expand_dims(np.array(' '.join(jd_keywords)), axis=0)
+    jd_vec = word_vectorizer.fit_transform(jd_keywords_text).toarray()
+    resumes_vec = word_vectorizer.transform(df['Resume_Clean'].values).toarray()
 
     sm = SimilarityMetrics(v_base=jd_vec, v_compare=resumes_vec)
-    sim = sm.cos_sim()  # similarity_list
+    similarity_list = sm.cos_sim()
+    df.insert(len(df.columns), 'Similarity', similarity_list)
+    df.sort_values(['Similarity'], ascending=False, inplace=True, kind='quicksort')
+    df.insert(len(df.columns), 'JD Match %', df['Similarity'].map(lambda x: f'{x:.0%}'))
 
-    # final_doc_rating_list = []
-    # sorted_doc_list = sorted(zip(sim, files_paths), key=lambda x: x[0], reverse=True)
-    # for element in sorted_doc_list:
-    #     doc_rating_list = []
-    #     doc_rating_list.append(os.path.basename(element[1]))
-    #     doc_rating_list.append("{:.0%}".format(element[0]))
-    #     final_doc_rating_list.append(doc_rating_list)
-    #
-    # print(final_doc_rating_list)
+    print(df[['Candidate', 'JD Match %']].to_string(index=False))
