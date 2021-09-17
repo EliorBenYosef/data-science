@@ -17,7 +17,7 @@ text_var = 'Review'
 
 ##############################
 
-# 1. Data Pre-Processing
+# Data Pre-Processing
 
 # Text Cleaning:
 tc = TextCleaner()
@@ -33,13 +33,13 @@ y = df[cat_var].values
 
 ##############################
 
-# 2. Dataset Splitting
+# Dataset Splitting
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
 ##############################
 
-# 3. Binary Classification:
+# Binary Classification:
 #   we can use a classical ML model or a deep learning model (NN)
 
 classification_models = ClassificationModels(X_train, y_train, X_test, y_test)
