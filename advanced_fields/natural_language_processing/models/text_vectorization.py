@@ -10,6 +10,7 @@ Text Vectorization models/methods:
 - Bag of Words (BoW)
 - Term Frequency - Inverse Document Frequency (TF-IDF)
 - Word2Vec (W2V)
+- Doc2Vec (D2V)
 it's possible to use a combination of the above methods.
 
 data you can get from word_vectorizer:
