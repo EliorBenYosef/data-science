@@ -23,11 +23,10 @@ from nltk.corpus import wordnet
 
 class TextCleaner:
 
-    # re.sub(r"\s+", "", text)  # remove all spaces
-    # re.sub(r"^\s+", "", text)  # remove left (leading) space
-    # re.sub(r"\s+$", "", text)  # remove right (trailing) space
-    # re.sub(r"^\s+|\s+$", "", text)  # remove both
-    # re.sub(' +', ' ',text)  # replace multiple spaces with a single space
+    # re.sub(' +', ' ',text)  # replace multiple spaces with a single space (remove extra spaces)
+    # re.sub(r'\s+', ' ', text)  # replace all whitespace chars [ \t\r\n\f] with a single space
+    # re.sub(r'^\s+', '', text)  # remove left (leading) whitespace chars
+    # re.sub(r'\s+$', '', text)  # remove right (trailing) whitespace chars
 
     def __init__(self, remove_stopwords=True, apply_normalization=True, lemmatize=True):
         """
@@ -119,7 +118,10 @@ class TextCleaner:
 
         text = text.lower()
         text = self.remove_stopwords_f(text)
-        text = re.sub('[^A-Za-z]+', ' ', text)
+
+        text = re.sub('[^a-zA-Z]+', ' ', text)  # select only alphabet characters (letters only)
+        # text = re.sub('[^a-zA-Z0-9]+', ' ', text)  # select only alphanumeric characters (letters & numbers)
+        # text = re.sub(r'\W+', ' ', text)  # Select only alphanumeric characters (including greek & underscore)
         return text
 
     def get_clean_lemmatized_text(self, text):
@@ -265,9 +267,11 @@ class TextCleaner:
         if self.remove_stopwords:
             text = self.remove_stopwords_f(text, keep_neg_words=True)
 
-        text = re.sub('[^a-zA-Z ]', repl=' ', string=text)  # remove non-letters characters (i.e. punctuation)
+        text = re.sub('[^a-zA-Z]+', ' ', text)  # select only alphabet characters (letters only)
+        # text = re.sub('[^a-zA-Z0-9]+', ' ', text)  # select only alphanumeric characters (letters & numbers)
+        # text = re.sub(r'\W+', ' ', text)  # Select only alphanumeric characters (including greek & underscore)
 
-        text = re.sub(' +', ' ', text)  # remove extra whitespace
+        text = re.sub(' +', ' ', text)  # remove extra spaces
 
         if self.apply_normalization:
             text = self.normalize_text(text)
@@ -280,22 +284,24 @@ class TextCleaner:
         """
         text = text.lower()  # lowercase capital letters
 
-        text = re.sub('httpS+s*', '', text)  # remove URLs
-        text = re.sub('RT|cc', '', text)  # remove RT and cc
-        text = re.sub('#S+', '', text)  # remove hashtags
-        text = re.sub('@S+', '', text)  # remove mentions
+        text = re.sub(r'(http|www)\S+\s*', '', text)  # remove URLs
+        text = re.sub(r'\S+@\S+\s*', '', text)  # remove emails
+        text = re.sub(r'@\S+\s*', '', text)  # remove mentions
+        text = re.sub(r'#\S+\s*', '', text)  # remove hashtags
 
         if self.remove_stopwords:
             text = self.remove_stopwords_f(text)
 
-        text = re.sub('[^a-zA-Z ]', repl=' ', string=text)  # remove non-letters characters (i.e. punctuation)
+        text = re.sub('[^a-zA-Z]+', ' ', text)  # select only alphabet characters (letters only)
+        # text = re.sub('[^a-zA-Z0-9]+', ' ', text)  # select only alphanumeric characters (letters & numbers)
+        # text = re.sub(r'\W+', ' ', text)  # Select only alphanumeric characters (including greek & underscore)
 
         # text = re.sub('[%s]' % re.escape("""!"#$%&'()*+,-./:;<=>?@[]^_`{|}~"""), '', text)  # remove punctuation
         # text = re.sub(r'[^\x00-\x7f]', '', text)  # remove non-ASCII characters
         # # # Replace non-ASCII characters with their most alike representation (doesn't work):
         # # text = unidecode(unicode(text, encoding="utf-8"))
 
-        text = re.sub(' +', ' ', text)  # remove extra whitespace
+        text = re.sub(' +', ' ', text)  # remove extra spaces
 
         if self.apply_normalization:
             text = self.normalize_text(text)
@@ -308,8 +314,9 @@ class TextCleaner:
         if self.remove_stopwords:
             text = self.remove_stopwords_f(text)
 
-        # text = re.sub('\W+', ' ', text)  # Select only alphanumeric characters (letters & numbers)
-        text = re.sub('[^A-Za-z]+', ' ', text)  # select only alphabet characters (letters only)
+        text = re.sub('[^a-zA-Z]+', ' ', text)  # select only alphabet characters (letters only)
+        # text = re.sub('[^a-zA-Z0-9]+', ' ', text)  # select only alphanumeric characters (letters & numbers)
+        # text = re.sub(r'\W+', ' ', text)  # Select only alphanumeric characters (including greek & underscore)
 
         if self.apply_normalization:
             text = self.normalize_text(text)
@@ -325,9 +332,13 @@ class TextCleaner:
         text = text.lower()
         text = text.replace('resume', '').replace('cv', '')
         text = text.replace('english', '').replace('eng', '')
-        text = re.sub('[^a-zA-Z ]', repl=' ', string=text)  # remove non-letters characters (i.e. punctuation)
-        text = re.sub(' +', ' ', text)  # remove extra whitespace
-        text = re.sub(r"^\s+|\s+$", "", text)  # remove both
+
+        text = re.sub('[^a-zA-Z]+', ' ', text)  # select only alphabet characters (letters only)
+        # text = re.sub('[^a-zA-Z0-9]+', ' ', text)  # select only alphanumeric characters (letters & numbers)
+        # text = re.sub(r'\W+', ' ', text)  # Select only alphanumeric characters (including greek & underscore)
+
+        text = re.sub(' +', ' ', text)  # remove extra spaces
+        text = re.sub(r'^\s+|\s+$', '', text)  # remove both left (leading) & right (trailing) whitespace chars
 
         candidate_name = text.title()
         return candidate_name
