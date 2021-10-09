@@ -5,23 +5,11 @@ One of the most popular Subword Tokenization algorithm, widely used among transf
 merges the most frequently occurring character or character sequences iteratively.
 """
 
-
 import numpy as np
 import pandas as pd
 from csv import QUOTE_NONE
 import collections
 import re
-
-
-perform_traditional_bpe = False
-min_frequency = 3
-
-df = pd.read_csv('../../../datasets/per_field/nlp/labeled_reviews.tsv', delimiter='\t', quoting=QUOTE_NONE)
-text_var = 'Review'
-
-##############################
-
-# Text Cleaning:
 
 
 def clean_text(text):
@@ -33,28 +21,6 @@ def clean_text(text):
 
     text = re.sub(' +', ' ', text)  # remove extra spaces
     return text
-
-
-df[text_var + '_clean'] = df[text_var].apply(lambda x: clean_text(x))
-
-corpus_raw = df[text_var + '_clean'].values
-
-##############################
-
-corpus_words = []
-for text in corpus_raw:
-    words = text.split()  # Word Tokenization
-    corpus_words.extend(words)
-
-# corpus_words = np.array(['low']*5 + ['lower']*2 + ['widest']*3 + ['newest']*5 + ['wider']*1)
-# # corpus_words = np.array(['low']*5 + ['lower']*2 + ['widest']*3 + ['newest']*5)
-# min_frequency = 1
-
-corpus_words_in_chars = [' '.join(word) for word in corpus_words]  # Character Tokenization
-corpus = dict(collections.Counter(corpus_words_in_chars))  # create a dict containing the frequency of each word in the corpus
-print("Corpus:", corpus)
-
-##############################
 
 
 def get_pair_frequency(corpus):
@@ -104,47 +70,73 @@ def update_vocab():
     frequency_vocab[pair_merged] = frequency
 
 
-# Initialize the vocabulary with unique characters in the corpus
-if perform_traditional_bpe:
-    vocab = list(set(' '.join(corpus_words)))
-    vocab.remove(' ')
-else:
-    frequency_vocab = {}
+def perform_bpe(df, text_var, perform_traditional_bpe, min_frequency):
+    # Text Cleaning:
+    df[text_var + '_clean'] = df[text_var].apply(lambda x: clean_text(x))
+    corpus_raw = df[text_var + '_clean'].values
 
-merges = []
+    ##############################
 
-# num_merges = 100
-# for i in range(num_merges):
-while True:
-    # perform_bpe_iteration
+    corpus_words = []
+    for text in corpus_raw:
+        words = text.split()  # Word Tokenization
+        corpus_words.extend(words)
 
-    pairs_frequency = get_pair_frequency(corpus)
-    if not pairs_frequency:
-        print('BPE Completed', '\n')
-        break
-    most_frequent_pair = max(pairs_frequency, key=pairs_frequency.get)
-    pair_merged = ''.join(list(most_frequent_pair))  # convert the pair tuple to a string
-    frequency = pairs_frequency[most_frequent_pair]
-    print(f'Most Frequent pair: {most_frequent_pair}. Frequency: {frequency}')
-    if frequency < min_frequency:
-        print('BPE Completed', '\n')
-        break
+    # corpus_words = np.array(['low']*5 + ['lower']*2 + ['widest']*3 + ['newest']*5 + ['wider']*1)
+    # # corpus_words = np.array(['low']*5 + ['lower']*2 + ['widest']*3 + ['newest']*5)
+    # min_frequency = 1
 
-    # merge the most frequent pair in corpus
-    corpus = merge_pair_in_corpus(most_frequent_pair, corpus)
-    print('Corpus:', corpus)
+    corpus_words_in_chars = [' '.join(word) for word in corpus_words]  # Character Tokenization
+    corpus = dict(
+        collections.Counter(corpus_words_in_chars))  # create a dict containing the frequency of each word in the corpus
+    print("Corpus:", corpus)
 
-    merges.append(most_frequent_pair)
+    ##############################
+
+    # Initialize the vocabulary with unique characters in the corpus
     if perform_traditional_bpe:
-        vocab.append(pair_merged)
+        vocab = list(set(' '.join(corpus_words)))
+        vocab.remove(' ')
     else:
-        update_vocab()
+        global frequency_vocab
+        frequency_vocab = {}
 
-print('BPE Merge Operations:', merges, '\n')
-if perform_traditional_bpe:
-    print('Vocabulary:', vocab, '\n')
-else:
-    print('Vocabulary:', frequency_vocab, '\n')
+    global pair_merged, frequency, merges
+    merges = []
+
+    # num_merges = 100
+    # for i in range(num_merges):
+    while True:
+        # perform_bpe_iteration
+
+        pairs_frequency = get_pair_frequency(corpus)
+        if not pairs_frequency:
+            print('BPE Completed', '\n')
+            break
+        most_frequent_pair = max(pairs_frequency, key=pairs_frequency.get)
+        pair_merged = ''.join(list(most_frequent_pair))  # convert the pair tuple to a string
+        frequency = pairs_frequency[most_frequent_pair]
+        print(f'Most Frequent pair: {most_frequent_pair}. Frequency: {frequency}')
+        if frequency < min_frequency:
+            print('BPE Completed', '\n')
+            break
+
+        # merge the most frequent pair in corpus
+        corpus = merge_pair_in_corpus(most_frequent_pair, corpus)
+        print('Corpus:', corpus)
+
+        merges.append(most_frequent_pair)
+        if perform_traditional_bpe:
+            vocab.append(pair_merged)
+        else:
+            update_vocab()
+
+    print('BPE Merge Operations:', merges, '\n')
+    if perform_traditional_bpe:
+        print('Vocabulary:', vocab, '\n')
+    else:
+        print('Vocabulary:', frequency_vocab, '\n')
+
 
 ##############################
 
@@ -188,20 +180,29 @@ def get_subwords_backwards(word):
     return subwords
 
 
-oov = 'disrespectful'
-# oov = 'distasteful'
-# oov = 'extraordinarily'
-# oov = 'antinationalist'
-# oov = 'unhappiness'
+def perform_bpe_and_apply_to_oov_words(df, text_var, oov_words, perform_traditional_bpe=False, min_frequency=3):
+    perform_bpe(df, text_var, perform_traditional_bpe, min_frequency)
+
+    # oov_words = ['lowest']
+    for oov in oov_words:
+        if perform_traditional_bpe:
+            subwords = get_subwords_bpe(oov)
+        else:
+            subwords = get_subwords_backwards(oov)
+
+        subwords = re.sub(' ', ' + ', subwords)
+        print(f'OOV word: {oov} = {subwords}')
 
 
-# oov = 'lowest'
+if __name__ == '__main__':
+    df = pd.read_csv('../../../datasets/per_field/nlp/labeled_reviews.tsv', delimiter='\t', quoting=QUOTE_NONE)
+    text_var = 'Review'
+    oov_words = ['disrespectful', 'distasteful', 'extraordinarily', 'antinationalist', 'unhappiness']
+    perform_bpe_and_apply_to_oov_words(df, text_var, oov_words, perform_traditional_bpe=False, min_frequency=3)
 
-if perform_traditional_bpe:
-    subwords = get_subwords_bpe(oov)
-else:
-    subwords = get_subwords_backwards(oov)
-
-
-subwords = re.sub(' ', ' + ', subwords)
-print(f'OOV word: {oov} = {subwords}')
+    # output:
+    # OOV word: disrespectful = dis + respect + ful
+    # OOV word: distasteful = dis + taste + ful
+    # OOV word: extraordinarily = extra + or + din + ar + il + y
+    # OOV word: antinationalist = ant + in + ation + al + ist
+    # OOV word: unhappiness = un + ha + pp + ine + ss
