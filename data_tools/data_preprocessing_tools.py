@@ -39,6 +39,10 @@ def handle_missing_data(df, num_v_i, cat_v_i):
 
             # Option 2: replacing missing (independent) variables with the column's:
             #   numerical variables - mean \ median \ most_frequent value \ a constant value
+            #   another method:
+            #       df.num_var = df.num_var.fillna(0)
+            #       df.cat_var = df.cat_var.fillna('Other')
+            #       df.date_time_var = df.date_time_var.fillna('N/A')  # N/A mean DateTime not available
             if num_v_i:
                 num_imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
                 num_imputer.fit(X[:, num_v_i])
