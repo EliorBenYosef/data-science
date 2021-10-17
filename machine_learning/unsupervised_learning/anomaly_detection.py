@@ -1,7 +1,7 @@
 """
 https://www.johnwittenauer.net/machine-learning-exercises-in-python-part-8/
 
-Anomaly Detection
+Anomaly Detection - Supervised approach
 implement an anomaly detection algorithm using a Gaussian model and apply it to detect failing servers on a network.
 using a Gaussian model to detect if an unlabeled example from a data set should be considered an anomaly.
 """
@@ -73,11 +73,11 @@ mu, sigma = estimate_gaussian(X)
 #   Essentially it's computing how far each instance is from the mean
 #       and how that compares to the "typical" distance from the mean for this data.
 p = np.zeros((X.shape[0], X.shape[1]))  # p.shape = (307L, 2L)
-p[:,0] = stats.norm(mu[0], sigma[0]).pdf(X[:,0])
-p[:,1] = stats.norm(mu[1], sigma[1]).pdf(X[:,1])
+p[:, 0] = stats.norm(mu[0], sigma[0]).pdf(X[:, 0])
+p[:, 1] = stats.norm(mu[1], sigma[1]).pdf(X[:, 1])
 pval = np.zeros((Xval.shape[0], Xval.shape[1]))
-pval[:,0] = stats.norm(mu[0], sigma[0]).pdf(Xval[:,0])
-pval[:,1] = stats.norm(mu[1], sigma[1]).pdf(Xval[:,1])
+pval[:, 0] = stats.norm(mu[0], sigma[0]).pdf(Xval[:, 0])
+pval[:, 1] = stats.norm(mu[1], sigma[1]).pdf(Xval[:, 1])
 
 # use the validation set's probabilities combined with the true label
 #   to determine the optimal probability threshold to assign data points as anomalies.
@@ -88,9 +88,9 @@ epsilon, f1 = select_threshold(pval, yval)
 outliers = np.where(p < epsilon)
 
 # Visualization
-fig, ax = plt.subplots(figsize=(12,8))
-ax.scatter(X[:,0], X[:,1])
-ax.scatter(X[outliers[0],0], X[outliers[0],1], s=50, color='r', marker='o')
+fig, ax = plt.subplots(figsize=(12, 8))
+ax.scatter(X[:, 0], X[:, 1])
+ax.scatter(X[outliers[0], 0], X[outliers[0], 1], s=50, color='r', marker='o')
 plt.show()
 
 # The points in red are the ones that were flagged as outliers.

@@ -1,22 +1,14 @@
 """
 https://www.johnwittenauer.net/machine-learning-exercises-in-python-part-8/
 
-Recommendation Systems
-Recommendation engines use item and user-based similarity measures to examine a user's historical preferences
-  to make recommendations for new "things" the user might be interested in.
-
-Collaborative Filtering is a particular recommendation algorithm
-
-Here we:
-implement collaborative filtering and apply it to a dataset of movie ratings.
-build a recommendation system using collaborative filtering and apply it to a movie recommendations dataset.
-
+Movie Recommender via Collaborative Filtering.
+CF applied to movie ratings dataset.
 """
 
 import numpy as np
 from scipy.io import loadmat
-import matplotlib.pyplot as plt
 from scipy.optimize import minimize
+import matplotlib.pyplot as plt
 
 
 # TODO: remove num_features?
