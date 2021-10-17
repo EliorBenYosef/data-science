@@ -8,7 +8,7 @@ Used for:
 - Visualization (2\3 dimensions):
     - n_components=2 for 2D visualization
     - n_components=3 for 3D visualization
-- Data Compression (99% variance retention):
+- Data Compression (variance retention value, % of variance retention):
     - n_components=0.99 for 99% variance retention
     - n_components=0.95 for 95% variance retention
 
@@ -50,6 +50,7 @@ from sklearn import datasets
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from matplotlib.patches import Patch
+import seaborn as sns
 
 from sklearn.decomposition import PCA, KernelPCA, FastICA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
@@ -63,6 +64,11 @@ colors_bold = ('#0000FF', '#FF0000', '#00FF00',
 class DimensionReducer:
 
     def __init__(self, X_train, y_train, X_test, y_test, y_label, clss_labels, n_components):
+        """
+        :param clss_labels:
+        :param n_components: int - when used for visualization (=2 for 2D / =3 for 3D),
+            float (<1) - when used for Data Compression (variance retention value: =0.99 for 99%, =0.80 for 80%, etc.)
+        """
         self.X_train = X_train
         self.y_train = y_train
         self.X_test = X_test
@@ -96,6 +102,37 @@ class DimensionReducer:
             # # often useful in selecting components and estimating the dimensionality of your space:
             # explained_variance_cumulative_proportion = np.cumsum(fitted_model.explained_variance_ratio_)
         print()
+
+    def show_scree_plot(self, fitted_model):
+        """
+        Scree plot - a line plot of the eigenvalues of factors or principal components in an analysis.
+        The scree plot is used to determine / choose the number of:
+            - Factors to retain, in an Exploratory Factor Analysis (EFA)
+            - Principal Components to keep, in a Principal Component Analysis (PCA)
+        This is done either via:
+            - the desired Variance Retention value (80% is min?) (determined via the accumulated explained variance)
+            - the Elbow Method (determined via the individual explained variance)
+        """
+        sns.color_palette("YlOrBr", as_cmap=True)
+
+        plt.figure(figsize=(15, 8))
+
+        # plot bars of individual explained variance:
+        pd.Series(fitted_model.explained_variance_ratio_).plot(kind="bar", alpha=0.7)
+
+        # Calculate the amount of variance explained added by
+        acc_exp_var = []  # accumulated explained variance, for each additional component
+        exp_var_total = 0
+        for explained_variance in fitted_model.explained_variance_ratio_:
+            exp_var_total += explained_variance
+            acc_exp_var.append(exp_var_total)
+        # plot line of accumulated explained variance:
+        pd.Series(acc_exp_var).plot(marker="o", alpha=0.7)
+
+        plt.xlabel("Principle Components", fontsize="x-large")
+        plt.ylabel("Percentage Variance Explained", fontsize="x-large")
+        plt.title("Scree Plot", fontsize="xx-large")
+        plt.show()
 
     def visualize(self):
         n_clss = len(np.unique(self.y_test))
