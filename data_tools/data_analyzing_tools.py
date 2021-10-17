@@ -22,6 +22,7 @@ from matplotlib.patches import Patch
 def analyze_df(df):
     print(df.shape, '\n')  # (59, 7)
     print(df.head(), '\n')
+    print(df.isna().sum(), '\n')  # check for missing (NA) values
 
 
 def present_data(X, y):
