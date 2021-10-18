@@ -167,8 +167,24 @@ class ClassificationModels:
         """
         model_name = f'KNN ({n_neighbors} {weights})'
 
-        # metric='minkowski', p=2 -> Euclidean Distance:
-        classifier = KNeighborsClassifier(n_neighbors=n_neighbors, weights=weights, metric='minkowski', p=2)
+        classifier = KNeighborsClassifier(n_neighbors=n_neighbors, weights=weights,
+                                          metric='minkowski', p=2)  # metric='minkowski', p=2 -> Euclidean Distance
+        classifier.fit(self.X_train, self.y_train)
+
+        y_pred = classifier.predict(self.X_test)
+
+        self.evaluate_model_performance(self.y_test, y_pred, model_name)
+
+        self.classifiers[model_name] = classifier
+
+    def nc(self):
+        """
+        Nearest Centroid (NearCent)
+        https://scikit-learn.org/stable/auto_examples/neighbors/plot_nearest_centroid.html
+        """
+        model_name = 'NearCent'
+
+        classifier = NearestCentroid(metric='euclidean')
         classifier.fit(self.X_train, self.y_train)
 
         y_pred = classifier.predict(self.X_test)
@@ -339,6 +355,7 @@ class ClassificationModels:
         self.knn()
         self.knn(n_neighbors=15)
         self.knn(n_neighbors=15, weights='distance')
+        self.nc()
         self.kernel_svc()  # probability=True
         self.kernel_svc(kernel='poly')
         self.naive_bayes()
