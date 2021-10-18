@@ -54,7 +54,7 @@ def apply_pca(X, n_pc):
 
 def pca_on_simple_2d_data(n_pc):
     """
-    Applying PCA to a simple 2D data set.
+    Applying PCA to a simple 2D dataset.
 
     Notice how the points all seem to be compressed down to an invisible line.
     That invisible line is essentially the first principal component.
@@ -73,11 +73,11 @@ def pca_on_simple_2d_data(n_pc):
 
     plt.subplot(1, 2, 1)
     plt.scatter(X[:, 0], X[:, 1])
-    plt.title('original data set')
+    plt.title('original dataset')
 
     plt.subplot(1, 2, 2)
     plt.scatter(X_recovered[:, 0], X_recovered[:, 1])
-    plt.title('recovered data set after PCA')
+    plt.title('recovered dataset after PCA')
 
     plt.show()
 
@@ -102,11 +102,11 @@ def pca_for_image_compression(n_pc):
 
     plt.subplot(1, 2, 1)
     plt.imshow(np.reshape(X[3, :], (32, 32)))
-    plt.title('original data set')
+    plt.title('original dataset')
 
     plt.subplot(1, 2, 2)
     plt.imshow(np.reshape(X_recovered[3, :], (32, 32)))
-    plt.title('recovered data set after PCA')
+    plt.title('recovered dataset after PCA')
 
     plt.show()
 

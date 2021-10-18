@@ -44,7 +44,7 @@ if not multivariate:
 # In order to make this cost function work seamlessly with the pandas data frame we created above,
 #   we need to do some manipulating:
 
-# 1. add ones column - append a ones column to the front of the data set
+# 1. add ones column - append a ones column to the front of the dataset
 #   we need to insert a column of 1s at the beginning of the data frame
 #   in order to make the matrix operations work correctly -
 #   basically it accounts for the intercept term (b) in the linear equation (y=ax+b).
@@ -94,14 +94,14 @@ def gradient_descent(X, y, theta, alpha, iters):
 
 
 # Now that we've got a way to evaluate solutions, and a way to find a good solution,
-#   it's time to apply this to our data set:
+#   it's time to apply this to our dataset:
 
 # initialize variables for learning rate and iterations
 #   There is no hard and fast rule for how to initialize them and typically some trial-and-error is involved.
 alpha = 0.01  # the learning rate - a factor in the update rule for the parameters that helps determine how quickly the algorithm will converge to the optimal solution.
 iters = 1000  # the number of iterations.
 
-# perform linear regression on the data set
+# perform linear regression on the dataset
 # perform gradient descent to "fit" the model parameters
 g, cost = gradient_descent(X, y, theta, alpha, iters)
 print('updated cost =', cost[0])

@@ -3,7 +3,7 @@ https://www.johnwittenauer.net/machine-learning-exercises-in-python-part-8/
 
 Anomaly Detection - Supervised approach
 implement an anomaly detection algorithm using a Gaussian model and apply it to detect failing servers on a network.
-using a Gaussian model to detect if an unlabeled example from a data set should be considered an anomaly.
+using a Gaussian model to detect if an unlabeled example from a dataset should be considered an anomaly.
 """
 
 import numpy as np
@@ -64,7 +64,7 @@ yval = data['yval']  # yval.shape = (307L, 1L)
 # Getting our Gaussian model parameters (mean and variance):
 mu, sigma = estimate_gaussian(X)
 
-# Calculate the probability density of each of the values in our data set & the validation set
+# Calculate the probability density of each of the values in our dataset & the validation set
 #   given the Gaussian model parameters we calculated above.
 # dist = stats.norm(mu, sigma)
 #   calculates the normal distribution given the parameters (mean and variance)
@@ -83,7 +83,7 @@ pval[:, 1] = stats.norm(mu[1], sigma[1]).pdf(Xval[:, 1])
 #   to determine the optimal probability threshold to assign data points as anomalies.
 epsilon, f1 = select_threshold(pval, yval)
 
-# apply the threshold to the data set and visualize the results.
+# apply the threshold to the dataset and visualize the results.
 # indexes of the values considered to be outliers
 outliers = np.where(p < epsilon)
 

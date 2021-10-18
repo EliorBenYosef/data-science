@@ -40,7 +40,7 @@ def log_loss(theta, x, y, learning_rate=None):
 
     Note that we reduce the output down to a single scalar value, which is the sum of the “error” quantified as a
     function of the difference between the class probability assigned by the model and the true label of the example.
-    The implementation is completely vectorized – it’s computing the model’s predictions for the whole data set
+    The implementation is completely vectorized – it’s computing the model’s predictions for the whole dataset
     in one statement (sigmoid(X * theta.T)).
     the variable called “reg” is a function of the parameter values.
         As the parameters get larger, the penalization added to the cost function increases.
