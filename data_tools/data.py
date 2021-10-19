@@ -15,7 +15,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 
-def get_X_from_sklearn_dataset(dataset, indices):
+def get_X_from_sklearn_dataset(dataset, indices=None):
     if indices is not None:
         X = dataset.data[:, indices]
         x_labels = np.array(dataset.feature_names)[indices]
@@ -25,7 +25,7 @@ def get_X_from_sklearn_dataset(dataset, indices):
     return X, x_labels
 
 
-def get_X_from_pandas_dataset(df, indices):
+def get_X_from_pandas_dataset(df, indices=None):
     if indices is not None:
         X = df.values[:, indices]
         x_labels = df.columns.values[indices]
@@ -49,6 +49,7 @@ class ClassificationDataSets:
 
         self.x_labels = None
         self.y_label = None
+        self.sample_label = None
         self.clss_labels = None
 
     def get_iris(self, indices=None):
@@ -65,7 +66,8 @@ class ClassificationDataSets:
         dataset = datasets.load_iris()
         self.X, self.x_labels = get_X_from_sklearn_dataset(dataset, indices)
         self.y = dataset.target
-        self.y_label = 'Iris type'
+        self.y_label = 'Iris Type'
+        self.sample_label = 'Iris'
         self.clss_labels = dataset.target_names
 
         # Note: how to select a subset of features (0,1) and classes (all but #2).
@@ -99,6 +101,7 @@ class ClassificationDataSets:
 
         self.X, self.y = df.iloc[:, :-1].values, df.iloc[:, -1].values
         self.x_labels, self.y_label = df.columns.values[:-1], df.columns.values[-1]
+        self.sample_label = 'Student'
         self.clss_labels = np.array(['Rejected', 'Accepted'])
 
         # Dataset Splitting
@@ -126,6 +129,7 @@ class ClassificationDataSets:
 
         self.X, self.y = df.iloc[:, :-1].values, df.iloc[:, -1].values
         self.x_labels, self.y_label = df.columns.values[:-1], df.columns.values[-1]
+        self.sample_label = 'Viewer'
         self.clss_labels = np.array(['No', 'Yes'])
 
         # Dataset Splitting
@@ -238,6 +242,7 @@ class RegressionDataSets:
 
         self.x_labels = None
         self.y_label = None
+        self.sample_label = None
         self.clss_labels = None
 
     def get_diabetes(self, indices=None):
@@ -252,7 +257,8 @@ class RegressionDataSets:
         dataset = datasets.load_diabetes()
         self.X, self.x_labels = get_X_from_sklearn_dataset(dataset, indices)
         self.y = dataset.target
-        self.y_label = 'Diabetes progression after one year'
+        self.y_label = 'Diabetes progression after 1Y'
+        self.sample_label = 'Patient'
 
         # Dataset Splitting
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
@@ -265,6 +271,7 @@ class RegressionDataSets:
         df = pd.read_csv('../../../datasets/per_field/sl/reg/Salary_Data.csv')
         self.X, self.y = df.iloc[:, :-1].values, df.iloc[:, -1].values
         self.x_labels, self.y_label = df.columns.values[:-1], df.columns.values[-1]
+        # self.sample_label =
 
         # Dataset Splitting
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
@@ -278,6 +285,7 @@ class RegressionDataSets:
                          header=None, names=['Population', 'Profit'])
         self.X, self.y = df.iloc[:, :-1].values, df.iloc[:, -1].values
         self.x_labels, self.y_label = df.columns.values[:-1], df.columns.values[-1]
+        # self.sample_label =
 
         # Dataset Splitting
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
@@ -290,6 +298,7 @@ class RegressionDataSets:
         df = pd.read_csv('../../../datasets/per_field/sl/reg/Position_Salaries.csv')
         self.X, self.y = df.iloc[:, 1].values[:, np.newaxis, ], df.iloc[:, -1].values
         self.x_labels, self.y_label = [df.columns.values[1]], df.columns.values[-1]
+        # self.sample_label =
 
         # Dataset Splitting
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
@@ -304,6 +313,7 @@ class RegressionDataSets:
         self.X, self.x_labels = get_X_from_pandas_dataset(df, indices)
         self.y = df.iloc[:, -1].values
         self.y_label = df.columns.values[-1]
+        # self.sample_label =
 
         # Dataset Splitting
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
@@ -317,6 +327,7 @@ class RegressionDataSets:
         self.X, self.x_labels = get_X_from_pandas_dataset(df, indices)
         self.y = df.iloc[:, -1].values
         self.y_label = df.columns.values[-1]
+        # self.sample_label =
 
         # Encoding categorical data:
         ct = ColumnTransformer(
@@ -331,10 +342,18 @@ class RegressionDataSets:
 
 class ClusteringDataSets:
 
+    def __init__(self):
+        self.X = None
+
+        self.x_labels = None
+        self.y_label = None
+        self.sample_label = None
+
     def get_Mall_Customers(self, indices=None):
         df = pd.read_csv('../../../datasets/per_field/usl/clustering/Mall_Customers.csv')
         self.x_labels = df.columns.values[indices] if indices is not None else df.columns.values[1:-1]
-        self.y_label = 'Customers'
+        self.y_label = 'Customer Group'
+        self.sample_label = 'Customer'
 
         # Encoding categorical data & Feature Scaling
         ct = ColumnTransformer(
