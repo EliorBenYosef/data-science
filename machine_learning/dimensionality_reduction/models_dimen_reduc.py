@@ -12,7 +12,8 @@ Used for:
     - n_components=0.99 for 99% variance retention
     - n_components=0.95 for 95% variance retention
 
-whiten - When True the components_ vectors are multiplied by the square root of n_samples and then divided by the
+whiten - relevant in PCA, F-ICA
+    When True the components_ vectors are multiplied by the square root of n_samples and then divided by the
     singular values to ensure uncorrelated outputs with unit component-wise variances.
     Whitening will remove some information from the transformed signal (the relative variance scales of the components)
     but can sometime improve the predictive accuracy of the downstream estimators
@@ -27,15 +28,10 @@ types:
     - ...
 
 - Type 2 - Feature Extraction:
-    - Principal Component Analysis (PCA)
-        - PCA
-        - Kernel PCA (K-PCA)
-    - Discriminant Analysis
-        - Linear Discriminant Analysis (LDA)
-        - Quadratic Discriminant Analysis (QDA)
-        - Gaussian Discriminant Analysis (GDA)
-    - Independent Component Analysis (ICA)
-        - Fast ICA (F-ICA)
+                                                Linear              Non-Linear
+    - Principal Component Analysis (PCA)        PCA                 Kernel PCA (K-PCA)
+    - Discriminant Analysis (DA)                Linear DA (LDA)     Quadratic DA (QDA), Gaussian DA (GDA)
+    - Independent Component Analysis (ICA)      Fast ICA (F-ICA)
     - Singular Value Decomposition (SVD)
     - Latent Variable Model (LVM) - ???
 """
@@ -50,7 +46,6 @@ from sklearn import datasets
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from matplotlib.patches import Patch
-import seaborn as sns
 
 from sklearn.decomposition import PCA, KernelPCA, FastICA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
@@ -63,12 +58,7 @@ colors_bold = ('#0000FF', '#FF0000', '#00FF00',
 
 class DimensionReducer:
 
-    def __init__(self, X_train, y_train, X_test, y_test, y_label, clss_labels, n_components):
-        """
-        :param clss_labels:
-        :param n_components: int - when used for visualization (=2 for 2D / =3 for 3D),
-            float (<1) - when used for Data Compression (variance retention value: =0.99 for 99%, =0.80 for 80%, etc.)
-        """
+    def __init__(self, X_train, y_train, X_test, y_test, y_label, clss_labels):
         self.X_train = X_train
         self.y_train = y_train
         self.X_test = X_test
@@ -77,13 +67,12 @@ class DimensionReducer:
         self.y_label = y_label
         self.clss_labels = clss_labels
 
-        print('Original number of features:', X_train.shape[1], '\n')
-
-        self.n_components = n_components
+        print('Original number of features:', X_train.shape[1])
 
         self.X_trans = {}
 
-    def get_n_components_by_variance_retention(self, fitted_model, goal_variance: float):
+    @staticmethod
+    def get_n_components_by_variance_retention(fitted_model, goal_variance: float):
         total_variance = 0.0
         n_components = 0
         for explained_variance in fitted_model.explained_variance_ratio_:
@@ -93,17 +82,8 @@ class DimensionReducer:
                 break
         return n_components
 
-    def print_num_of_features(self, X_train_trans, model_name):
-        print(f'{model_name} - Number of features with {self.n_components} variance:', X_train_trans.shape[1])
-
-    def print_components_variance_percentage(self, fitted_model, model_name):
-        if hasattr(fitted_model, 'explained_variance_ratio_'):
-            print(f'{model_name} components variance percentage:', fitted_model.explained_variance_ratio_)
-            # # often useful in selecting components and estimating the dimensionality of your space:
-            # explained_variance_cumulative_proportion = np.cumsum(fitted_model.explained_variance_ratio_)
-        print()
-
-    def show_scree_plot(self, fitted_model):
+    @staticmethod
+    def plot_scree(fitted_model, model_name, show=False):
         """
         Scree plot - a line plot of the eigenvalues of factors or principal components in an analysis.
         The scree plot is used to determine / choose the number of:
@@ -113,12 +93,18 @@ class DimensionReducer:
             - the desired Variance Retention value (80% is min?) (determined via the accumulated explained variance)
             - the Elbow Method (determined via the individual explained variance)
         """
-        sns.color_palette("YlOrBr", as_cmap=True)
+        explained_variances = fitted_model.explained_variance_ratio_
 
-        plt.figure(figsize=(15, 8))
+        plt.figure(figsize=(12, 8))
 
         # plot bars of individual explained variance:
-        pd.Series(fitted_model.explained_variance_ratio_).plot(kind="bar", alpha=0.7)
+        ax = pd.Series(explained_variances).plot(kind='bar', alpha=0.7)
+        for x, p in enumerate(ax.patches):
+            y = p.get_height()
+            ax.annotate(f'{y:.5f}', (x, y),
+                        textcoords="offset points",  # how to position the text
+                        xytext=(0, 10),  # distance from text to points (x,y)
+                        ha='center')  # horizontal alignment can be left, right or center
 
         # Calculate the amount of variance explained added by
         acc_exp_var = []  # accumulated explained variance, for each additional component
@@ -126,56 +112,95 @@ class DimensionReducer:
         for explained_variance in fitted_model.explained_variance_ratio_:
             exp_var_total += explained_variance
             acc_exp_var.append(exp_var_total)
+
         # plot line of accumulated explained variance:
-        pd.Series(acc_exp_var).plot(marker="o", alpha=0.7)
+        pd.Series(acc_exp_var).plot(marker='o', alpha=0.7)
+        for x, y in enumerate(acc_exp_var):
+            if x != 0:
+                plt.annotate(f'{y:.5f}', (x, y),
+                             textcoords="offset points",  # how to position the text
+                             xytext=(0, 10),  # distance from text to points (x,y)
+                             ha='center')  # horizontal alignment can be left, right or center
 
-        plt.xlabel("Principle Components", fontsize="x-large")
-        plt.ylabel("Percentage Variance Explained", fontsize="x-large")
-        plt.title("Scree Plot", fontsize="xx-large")
-        plt.show()
+        plt.axhline(y=0.9, color='k', linestyle='--')
+        plt.axhline(y=0.95, color='k', linestyle='--')
+        plt.axhline(y=1, color='k', linestyle='--')
 
-    def visualize(self):
+        plt.xlabel('Principle Components', fontsize='x-large')
+        plt.ylabel('Explained Variance %', fontsize='x-large')
+        plt.title(f'Scree Plot - {model_name}', fontsize='xx-large')
+        # plt.savefig(f'results/screeplot_{model_name}.png')
+        if show:
+            plt.show()
+
+    def plot_scree_all(self, show=False):
+        DimensionReducer.plot_scree(PCA().fit(self.X_train), 'PCA', show)
+        DimensionReducer.plot_scree(LDA().fit(self.X_train, self.y_train), 'LDA', show)
+
+    def visualize(self, show=False):
         n_clss = len(np.unique(self.y_test))
 
-        for dimen_reducer_name, (X_train, X_test) in self.X_trans.items():
+        for model_name, (n_components_title, X_train, X_test) in self.X_trans.items():
 
-            if self.n_components == 2:
+            n_components = X_train.shape[1]
+            if n_components == 1 or n_components == 2:
                 plt.figure()
-                plt.scatter(X_test[:, 0], X_test[:, 1],
+                plt.scatter(X_test[:, 0], X_test[:, 1] if n_components == 2 else np.zeros(X_test.shape[0]),
                             c=self.y_test, cmap=ListedColormap(colors_bold[:n_clss]),
                             # alpha=.8, lw=2,
                             zorder=10, edgecolor='k', s=20)  # s - plot_symbol_size
                 patches = [Patch(color=c, label=l) for c, l in zip(colors_bold[:n_clss], self.clss_labels)]
                 plt.legend(handles=patches, loc='best', shadow=False, scatterpoints=1)
-                var_name = dimen_reducer_name[-3:-1]
+                var_name = model_name[-3:-1]
                 plt.xlabel(f'{var_name}1')
-                plt.ylabel(f'{var_name}2')
-                plt.title(f'{dimen_reducer_name} - Predicted "{self.y_label}" label')
+                if n_components == 2:
+                    plt.ylabel(f'{var_name}2')
+                else:
+                    plt.yticks([])
+                plt.title(f'{model_name} - {n_components_title} '
+                          + ('Variance Retention' if n_components_title < 1 else 'Components')
+                          + f' - Predicted "{self.y_label}" label')
+                # plt.savefig(f'results/dimenreduc_{n_components_title}_{model_name}.png')
 
-            elif self.n_components == 3:
-                pass
-                # TODO: complete
+            elif n_components == 3:
+                pass  # TODO: complete 3D
 
-        plt.show()
+        if show:
+            plt.show()
 
-    def classify_and_visualize(self):
-        for dimen_reducer_name, (X_train, X_test) in self.X_trans.items():
-            classification_models = ClassificationModels(X_train, self.y_train, X_test, self.y_test)
-            classification_models.log_reg()
-            classification_models.print_models_performance(dimen_reducer_name)
+    # def classify_and_visualize(self):
+    #     for model_name, (n_components_title, X_train, X_test) in self.X_trans.items():
+    #         classification_models = ClassificationModels(X_train, self.y_train, X_test, self.y_test)
+    #         classification_models.log_reg()
+    #         classification_models.print_models_performance(model_name)
+    #
+    #         n_components = X_train.shape[1]
+    #         if n_components == 2:
+    #             var_name = model_name[-3:-1]
+    #             visualizer = Visualizer(X_test, self.y_test, f'{var_name}1', f'{var_name}2', self.y_label,
+    #                                     self.clss_labels)
+    #             for classifier_name, classifier in classification_models.classifiers.items():
+    #                 visualizer.visualize_results_2D(classifier, model_name + ' + ' + classifier_name)
+    #             visualizer.show_results()
+    #         elif n_components == 3:
+    #             pass
+    #             # TODO: complete
 
-            if self.n_components == 2:
-                var_name = dimen_reducer_name[-3:-1]
-                visualizer = Visualizer(X_test, self.y_test, f'{var_name}1', f'{var_name}2', self.y_label,
-                                        self.clss_labels)
-                for classifier_name, classifier in classification_models.classifiers.items():
-                    visualizer.visualize_results_2D(classifier, dimen_reducer_name + ' + ' + classifier_name)
-                visualizer.show_results()
-            elif self.n_components == 3:
-                pass
-                # TODO: complete
+    @staticmethod
+    def print_results(fitted_model, model_name, n_components, X_train_trans):
+        if n_components < 1:
+            print(f'{model_name} components with {n_components} variance: {X_train_trans.shape[1]}')
 
-    def pca(self):
+        if hasattr(fitted_model, 'explained_variance_ratio_'):
+            print(f'{model_name} components variance percentage:', fitted_model.explained_variance_ratio_)
+            # # often useful in selecting components and estimating the dimensionality of your space:
+            # explained_variance_cumulative_proportion = np.cumsum(fitted_model.explained_variance_ratio_)
+
+    """
+    LinearModels
+    """
+
+    def pca(self, n_components):
         """
         Principal Component Analysis (PCA) - unsupervised linear transformation technique
         https://setosa.io/ev/principal-component-analysis/
@@ -197,32 +222,13 @@ class DimensionReducer:
         5. Transform the original dataset X via W to obtain a k-dimensional feature subspace Y.
         """
         model_name = 'PCA'
-        model = PCA(n_components=self.n_components)
+        model = PCA(n_components=n_components)  # n_components can be <1
         X_train_trans = model.fit_transform(self.X_train)
         X_test_trans = model.transform(self.X_test)
+        self.print_results(model, model_name, n_components, X_train_trans)
+        self.X_trans[model_name] = (n_components, X_train_trans, X_test_trans)
 
-        if self.n_components < 1:  # n_components=0.99, whiten=True
-            self.print_num_of_features(X_train_trans, model_name)
-        self.print_components_variance_percentage(model, model_name)
-
-        self.X_trans[model_name] = (X_train_trans, X_test_trans)
-
-    def k_pca(self, kernel='rbf'):
-        """
-        Kernel PCA (K-PCA) - unsupervised nonlinear transformation technique
-        """
-        model_name = 'K-PCA'
-        model = KernelPCA(n_components=self.n_components, kernel=kernel)
-        X_train_trans = model.fit_transform(self.X_train)
-        X_test_trans = model.transform(self.X_test)
-
-        if self.n_components < 1:
-            self.print_num_of_features(X_train_trans, model_name)
-        self.print_components_variance_percentage(model, model_name)
-
-        self.X_trans[model_name] = (X_train_trans, X_test_trans)
-
-    def lda(self):
+    def lda(self, n_components):
         """
         Linear Discriminant Analysis (LDA) - supervised linear transformation technique
         used as a data pre-processing step for classification tasks.
@@ -244,54 +250,58 @@ class DimensionReducer:
             and y are the transformed n×k-dimensional samples in the new subspace).
         """
         model_name = 'LDA'
-
-        if self.n_components < 1:
-            n_components = self.get_n_components_by_variance_retention(
-                fitted_model=LDA().fit(self.X_train, self.y_train),
-                goal_variance=self.n_components)
-        else:
-            n_components = self.n_components
-        model = LDA(n_components=n_components)
+        model = LDA(n_components=n_components if n_components >= 1 else self.get_n_components_by_variance_retention(
+                fitted_model=LDA().fit(self.X_train, self.y_train), goal_variance=n_components))
         X_train_trans = model.fit_transform(self.X_train, self.y_train)
         X_test_trans = model.transform(self.X_test)
+        self.print_results(model, model_name, n_components, X_train_trans)
+        self.X_trans[model_name] = (n_components, X_train_trans, X_test_trans)
 
-        if self.n_components < 1:
-            self.print_num_of_features(X_train_trans, model_name)
-        self.print_components_variance_percentage(model, model_name)
+    def f_ica(self, n_components):
+        """
+        Fast Independent Component Analysis (F-ICA) - unsupervised linear transformation technique
+        probabilistic method.
+        """
+        model_name = 'F-ICA'
+        if n_components < 1:
+            return
+        model = FastICA(n_components=n_components)
+        X_train_trans = model.fit_transform(self.X_train)
+        X_test_trans = model.transform(self.X_test)
+        # A_ = model.mixing_  # Get estimated mixing matrix
+        self.print_results(model, model_name, n_components, X_train_trans)
+        self.X_trans[model_name] = (n_components, X_train_trans, X_test_trans)
 
-        self.X_trans[model_name] = (X_train_trans, X_test_trans)
+    """
+    NonLinearModels
+    """
 
-    def qda(self):
+    def k_pca(self, n_components, kernel='rbf'):
+        """
+        Kernel PCA (K-PCA) - unsupervised nonlinear transformation technique
+        """
+        model_name = 'K-PCA'
+        model = KernelPCA(n_components=n_components, kernel=kernel)
+        X_train_trans = model.fit_transform(self.X_train)
+        X_test_trans = model.transform(self.X_test)
+        self.print_results(model, model_name, n_components, X_train_trans)
+        self.X_trans[model_name] = (n_components, X_train_trans, X_test_trans)
+
+    def qda(self, n_components):
         """
         Quadratic Discriminant Analysis (QDA)
         """
         pass
 
-    def gda(self):
+    def gda(self, n_components):
         """
         Gaussian Discriminant Analysis (GDA)
         """
         pass
 
-    def f_ica(self):
-        """
-        Fast Independent Component Analysis (F-ICA) - unsupervised
-        """
-        if self.n_components < 1:
-            return
-
-        model_name = 'F-ICA'
-        model = FastICA(n_components=self.n_components)
-        X_train_trans = model.fit_transform(self.X_train)
-        X_test_trans = model.transform(self.X_test)
-
-        # A_ = model.mixing_  # Get estimated mixing matrix
-
-        if self.n_components < 1:
-            self.print_num_of_features(X_train_trans, model_name)
-        self.print_components_variance_percentage(model, model_name)
-
-        self.X_trans[model_name] = (X_train_trans, X_test_trans)
+    """
+    To be completed
+    """
 
     def svd(self):
         """
@@ -307,12 +317,37 @@ class DimensionReducer:
         """
         pass
 
-    def all(self, kernel='rbf'):
-        self.pca()
-        self.lda()
-        self.k_pca(kernel)
-        self.f_ica()
+    """
+    AllModels
+    """
 
+    def all_linear(self, n_components):
+        self.pca(n_components)
+        self.lda(n_components)
+        self.f_ica(n_components)
+
+    def all_nonlinear(self, n_components, kernel='rbf'):
+        self.k_pca(n_components, kernel)
+
+    def all(self, n_components, kernel='rbf', show=False):
+        """
+        :param n_components: int - when used for visualization (=2 for 2D / =3 for 3D),
+            float (<1) - when used for Data Compression (variance retention value: =0.99 for 99%, =0.80 for 80%, etc.)
+        :param kernel: for the K-PCA
+        :param show: show plots
+        :return:
+        """
+        if n_components < 1:
+            print('\n', f'~~ {n_components} variance retention ~~')
+        else:
+            print('\n', f'~~ {n_components} components ~~')
+        self.all_linear(n_components)
+        self.all_nonlinear(n_components, kernel)
+        self.visualize(show)
+        # self.classify_and_visualize()
+
+
+#########################################
 
 if __name__ == '__main__':
     # df = pd.read_csv('../../datasets/per_field/usl/dimensionality_reduction/Wine.csv')
@@ -332,8 +367,7 @@ if __name__ == '__main__':
     # X_train_sc = sc.fit_transform(X_train.astype(float))
     # X_test_sc = sc.transform(X_test.astype(float))
 
-    dimen_reducer = DimensionReducer(X_train, y_train, X_test, y_test, y_label, clss_labels,
-                                     n_components=2)
-    dimen_reducer.all()
-    dimen_reducer.visualize()
-    # dimen_reducer.classify_and_visualize()
+    dimen_reducer = DimensionReducer(X_train, y_train, X_test, y_test, y_label, clss_labels)
+    dimen_reducer.plot_scree_all()
+    dimen_reducer.all(n_components=0.95)  # variance retention
+    dimen_reducer.all(n_components=2)  # n_components
