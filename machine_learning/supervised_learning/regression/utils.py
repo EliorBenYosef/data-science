@@ -74,7 +74,7 @@ class Visualizer:
         ax.set_title(f'Predicted {self.y_label} vs. {self.x1_label} & {self.x2_label}')
         plt.show()
 
-    # def visualize_results_2D(self, classifier, sc, model_name, is_svm=False, is_linsvc=False, probability=False):
+    # def visualize_results_2D(self, classifier, sc, model_name, is_svm=False, is_linsvm=False, probability=False):
     #     """
     #     Visualizes the results of a single classification model
     #     Plots the decision boundary, by assigning a color to each point in the mesh
@@ -89,7 +89,7 @@ class Visualizer:
     #     #               shading='auto')
     #
     #     if is_svm:
-    #         self.plot_svm(classifier, sc, ax, is_linsvc, probability)
+    #         self.plot_svm(classifier, sc, ax, is_linsvm, probability)
     #     else:
     #         # for i, clss in enumerate(self.labels):
     #         #     ax.scatter(*self.X_test[self.y_test == clss].T,
@@ -111,7 +111,7 @@ class Visualizer:
     #     ax.set_title(f'{model_name} - Predicted "{self.y_label}" label')
     #     # plt.title("4-Class classification (k = %i, weights = '%s')" % (n_neighbors, weights))
     #
-    # def plot_svm(self, classifier, sc, ax, is_linsvc, probability):
+    # def plot_svm(self, classifier, sc, ax, is_linsvm, probability):
     #     """
     #     Plotting SVM's decision boundaries & margins
     #     """
@@ -126,7 +126,7 @@ class Visualizer:
     #                linestyles=['--', '-', '--'],
     #                levels=[-1, 0, 1])
     #
-    #     # if is_linsvc:
+    #     # if is_linsvm:
     #     #     d_fun_X_test = classifier.decision_function(sc.transform(self.X_test))
     #     #     support_vector_indices = np.where(np.abs(d_fun_X_test) <= 1 + 1e-15)[0]
     #     #     support_vectors = self.X_test[support_vector_indices]

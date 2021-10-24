@@ -1,7 +1,4 @@
 """
-https://medium.com/@masarudheena/4-best-ways-to-find-optimal-number-of-clusters-for-clustering-with-python-code-706199fa957c
-https://towardsdatascience.com/cheat-sheet-to-implementing-7-methods-for-selecting-optimal-number-of-clusters-in-python-898241e1d6ad
-
 A "clustering" is essentially a set of such clusters, usually containing all objects in the dataset.
 Additionally, it may specify the relationship of the clusters to each other, for example,
 a hierarchy of clusters embedded in each other.
@@ -14,6 +11,10 @@ Clustering types:
 - Distribution-based Clustering - Gaussian Mixture Models (GMMs) utilize the Expectation-Maximization (EM) algorithm
     which uses multivariate normal distributions.
 - Grid-based Clustering - STING, CLIQUE
+
+https://scikit-learn.org/stable/modules/clustering.html
+https://medium.com/@masarudheena/4-best-ways-to-find-optimal-number-of-clusters-for-clustering-with-python-code-706199fa957c
+https://towardsdatascience.com/cheat-sheet-to-implementing-7-methods-for-selecting-optimal-number-of-clusters-in-python-898241e1d6ad
 """
 
 import matplotlib.pyplot as plt
