@@ -9,7 +9,7 @@ MAX_MATCHES = 500  # MAX_FEATURES - max number of ORB features to detect in the 
 GOOD_MATCH_PERCENT = 0.15
 
 
-def alignImages(im1, im2):
+def align_img(im1, im2):
     # Convert images to grayscale
     im1Gray = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
     im2Gray = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
@@ -29,7 +29,7 @@ def alignImages(im1, im2):
 
     # Draw top matches
     imMatches = cv2.drawMatches(im1, keypoints1, im2, keypoints2, matches, None)
-    cv2.imwrite("matches.jpg", imMatches)
+    cv2.imwrite('output_img/scanned-form_matches.jpg', imMatches)
 
     # Extract location of good matches
     points1 = np.zeros((len(matches), 2), dtype=np.float32)
@@ -53,5 +53,5 @@ def alignImages(im1, im2):
 if __name__ == '__main__':
     imgReference = cv2.imread('../../../datasets/per_field/cv/form.jpg', cv2.IMREAD_COLOR)  # Read reference\template image
     img = cv2.imread('../../../datasets/per_field/cv/scanned-form.jpg', cv2.IMREAD_COLOR)  # Read image to be aligned
-    imgReg = alignImages(img, imgReference)  # Registered image will be resotred in imgReg. The estimated homography will be stored in h.
-    cv2.imwrite('aligned.jpg', imgReg)  # Write aligned image to disk.
+    imgReg = align_img(img, imgReference)  # Registered image will be resotred in imgReg. The estimated homography will be stored in h.
+    cv2.imwrite('output_img/scanned-form_aligned.jpg', imgReg)  # Write aligned image to disk.

@@ -20,11 +20,11 @@ def segment(img_pil_in, threshold):
     return img_pil_out
 
 
-img_pil = Image.open('../../../datasets/per_field/cv/color_eiffel.jpg')
+img_pil = Image.open('../../../../datasets/per_field/cv/color_eiffel.jpg')
 img_pil = img_pil.convert('L')
 img_pil.show()
 
-for th in [50, 100, 150, 200, 250]:
-    out_im = segment(img_pil, th)
+for threshold in range(75, 175, 25):
+    out_im = segment(img_pil, threshold)
+    out_im.save(f'results/binary_segmentation_{threshold}.png')
     out_im.show()
-    # out_im.save("./images/th/out"+str(th) + ".jpg")

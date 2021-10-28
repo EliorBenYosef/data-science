@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 import scipy.signal as sig
-from ..kernels import get_sobel_kernels
+from advanced_fields.computer_vision.image_processing.kernels import get_sobel_kernels
 
 from skimage.feature import hog
 from skimage import data, exposure
@@ -15,6 +15,43 @@ from skimage import data, exposure
 N_BUCKETS = 9
 CELL_SIZE = 8  # Each cell is CELL_SIZExCELL_SIZE pixels
 BLOCK_SIZE = 2  # Each block is BLOCK_SIZExBLOCK_SIZE cells
+
+
+##########################################
+
+# skimage implementation
+
+# N_BUCKETS = 8
+# CELL_SIZE = 16
+# BLOCK_SIZE = 1
+
+def plot_hog_image(img, hog_img):
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4), sharex=True, sharey=True)
+
+    ax1.axis('off')
+    ax1.imshow(img, cmap='gray')  # cmap=plt.cm.gray
+
+    # Rescale histogram for better display
+    hog_image_rescaled = exposure.rescale_intensity(hog_img, in_range=(0, 10))
+
+    ax2.axis('off')
+    ax2.imshow(hog_image_rescaled, cmap='gray')  # cmap=plt.cm.gray
+    ax2.set_title('Histogram of Oriented Gradients')
+
+    plt.tight_layout()
+    plt.savefig('results/hog.png')
+    plt.show()
+
+
+img = data.astronaut()
+# img_bgr = cv2.imread('../../../../datasets/per_field/cv/color_man_2004.jpg')
+# img_bgr = cv2.imread('../../../../datasets/per_field/cv/color_lady.jpg')
+# img = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+
+fd, hog_img = hog(img, orientations=N_BUCKETS, pixels_per_cell=(CELL_SIZE, CELL_SIZE),
+                  cells_per_block=(BLOCK_SIZE, BLOCK_SIZE), visualize=True, multichannel=True)
+
+plot_hog_image(img, hog_img)
 
 ##########################################
 
@@ -72,6 +109,7 @@ def plot_hog_single(magnitude_hist, bucket_names, title='cell'):
     plt.grid(ls='--', color='k', alpha=0.1)
     plt.title("HOG of %s [%d, %d]" % (title, r * CELL_SIZE, c * CELL_SIZE))
     plt.tight_layout()
+    # plt.savefig('results/hog_single.png')
     plt.show()
 
 
@@ -93,48 +131,16 @@ for r in range(cell_rows):
         magnitudes, directions = get_magnitudes_and_direction(r * CELL_SIZE, c * CELL_SIZE)
         magnitude_hist = get_magnitude_values_per_direction_bucket(magnitudes.flatten(), directions.flatten())
         magnitude_hists[r, c] = magnitude_hist
-        plot_hog_single(magnitude_hist, bucket_names=np.arange(N_BUCKETS))
+        # plot_hog_single(magnitude_hist, bucket_names=np.arange(N_BUCKETS))
 
 for r in range(cell_rows - BLOCK_SIZE + 1):
     for c in range(cell_columns - BLOCK_SIZE + 1):
         # for each block:
         magnitude_hists_block = np.resize(magnitude_hists[r:r + BLOCK_SIZE, c:c + BLOCK_SIZE],
                                           (N_BUCKETS * (BLOCK_SIZE ** 2)))
-        plot_hog_single(magnitude_hists_block, bucket_names=np.tile(np.arange(N_BUCKETS), BLOCK_SIZE ** 2),
-                        title='block')
+        # plot_hog_single(magnitude_hists_block, bucket_names=np.tile(np.arange(N_BUCKETS), BLOCK_SIZE ** 2),
+        #                 title='block')
 
-
-##########################################
-
-# skimage implementation
-
-# N_BUCKETS = 8
-# CELL_SIZE = 16
-# BLOCK_SIZE = 1
-
-def plot_hog_image(img, hog_img):
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4), sharex=True, sharey=True)
-
-    ax1.axis('off')
-    ax1.imshow(img, cmap='gray')  # cmap=plt.cm.gray
-    ax1.set_title('Input image')
-
-    # Rescale histogram for better display
-    hog_image_rescaled = exposure.rescale_intensity(hog_img, in_range=(0, 10))
-
-    ax2.axis('off')
-    ax2.imshow(hog_image_rescaled, cmap='gray')  # cmap=plt.cm.gray
-    ax2.set_title('Histogram of Oriented Gradients')
-    plt.show()
-
-
-img = data.astronaut()
-# img = cv2.imread('../../../datasets/per_field/cv/color_man_2004.jpg')
-
-fd, hog_img = hog(img, orientations=N_BUCKETS, pixels_per_cell=(CELL_SIZE, CELL_SIZE),
-                  cells_per_block=(BLOCK_SIZE, BLOCK_SIZE), visualize=True, multichannel=True)
-
-plot_hog_image(img, hog_img)
 
 ##########################################
 
