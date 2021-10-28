@@ -7,6 +7,8 @@ import scipy.signal as sig
 import cv2
 import matplotlib.pyplot as plt
 
+from advanced_fields.computer_vision.utils import scale_0_255
+
 
 def get_prewitt_kernels():
     """
@@ -34,17 +36,6 @@ def get_sobel_kernels():
                           [0, 0, 0],
                           [-1, -2, -1]])
     return K_sobel_x, K_sobel_y
-
-
-def scale_0_255(X):
-    """
-    Rescale values back to pixel values [0, 255] for the display purpose
-    Note that plt.imshow() can handle the value scale well even without the scaling
-    """
-    X_min, X_max = np.min(X), np.max(X)
-    X_norm = (X - X_min) / (X_max - X_min)
-    X_rescaled = 255 * X_norm
-    return X_rescaled
 
 
 def plot_two_operators(GV_x_op1, GV_y_op1, GV_x_op2, GV_y_op2, op1_name='Prewitt', op2_name='Sobel'):

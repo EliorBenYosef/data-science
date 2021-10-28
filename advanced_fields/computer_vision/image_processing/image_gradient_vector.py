@@ -2,11 +2,14 @@ import numpy as np
 import scipy.signal as sig
 import math
 import cv2
-from kernels import scale_0_255
+from advanced_fields.computer_vision.utils import scale_0_255
 
-data = np.array([[0, 90, 0],
-                 [105, 0, 55],
-                 [0, 40, 0]])
+img = np.array([[0, 90, 0],
+                [105, 0, 55],
+                [0, 40, 0]])
+
+# img = cv2.imread('../../../datasets/per_field/cv/color_lady.jpg', cv2.IMREAD_GRAYSCALE)
+
 
 # Note:
 # Convolution reverses the direction of one of the functions it works on.
@@ -25,8 +28,8 @@ kernel_x = np.array([[-1, 0, 1]])[::-1, ::-1]
 kernel_y = np.array([[1], [0], [-1]])[::-1, ::-1]
 # kernel_y = np.flip([[1], [0], [-1]], axis=0)
 
-GV_x = sig.convolve2d(data, kernel_x, mode='valid')[1, 0]       # returns [[0], [-50], [0]]
-GV_y = sig.convolve2d(data, kernel_y, mode='valid')[0, 1]       # returns [[0, 50, 0]]
+GV_x = sig.convolve2d(img, kernel_x, mode='valid')[1, 0]       # returns [[0], [-50], [0]]
+GV_y = sig.convolve2d(img, kernel_y, mode='valid')[0, 1]       # returns [[0, 50, 0]]
 
 # Gradient Vector:
 GV = np.array([[GV_x], [GV_y]])
@@ -50,7 +53,7 @@ print(f"Gradient Vector's Direction: {GV_theta}°")
 img = cv2.imread('../../../datasets/per_field/cv/color_man_2004.jpg')
 # img = np.float32(img) / 255.0  # scaling
 
-GV_x_sobel = scale_0_255(cv2.Sobel(img, cv2.CV_32F, 1, 0, ksize=1)).astype(np.uint8)  # cv2.CV_8U, ksize=5
-GV_y_sobel = scale_0_255(cv2.Sobel(img, cv2.CV_32F, 0, 1, ksize=1)).astype(np.uint8)  # cv2.CV_8U, ksize=5
+GV_x_sobel = scale_0_255(cv2.Sobel(img, cv2.CV_32F, 1, 0, ksize=1))  # cv2.CV_8U, ksize=5
+GV_y_sobel = scale_0_255(cv2.Sobel(img, cv2.CV_32F, 0, 1, ksize=1))  # cv2.CV_8U, ksize=5
 
 GV_M, GV_theta = cv2.cartToPolar(GV_x_sobel, GV_y_sobel, angleInDegrees=True)

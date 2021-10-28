@@ -1,11 +1,10 @@
-"""
-Calculate the overlap (AKA 'IOU') between two bounding boxes
-"""
+import numpy as np
 
 
 def calculate_iou(bb1, bb2):
     """
-    calculates the Intersection Over Union (IOU) score of the two bounding-boxes.
+    Calculates the Intersection Over Union (IOU) score of the two bounding-boxes
+    (the overlap between two bounding boxes).
     each bounding-box coordinates are in the form of: (x_min, y_min, x_max, y_max).
     """
     bb1_x_min, bb1_y_min, bb1_x_max, bb1_y_max = bb1
@@ -33,7 +32,20 @@ def calculate_iou(bb1, bb2):
     return iou
 
 
-if __name__ == '__main__':
+def scale_0_255(X):
+    """
+    Rescale values back to pixel values [0, 255] for the display purpose
+    Note that plt.imshow() can handle the value scale well even without the scaling
+    """
+    X_min, X_max = np.min(X), np.max(X)
+    X_norm = (X - X_min) / (X_max - X_min)
+    X_rescaled = 255 * X_norm
+    return X_rescaled
+
+
+##########################################
+
+def test_iou_calculation():
     pred = (50, 50, 90, 100)
     target = (70, 80, 120, 150)
     print(calculate_iou(pred, target))
@@ -57,3 +69,7 @@ if __name__ == '__main__':
     pred = (70, 70, 80, 80)
     target = (70, 70, 80, 80)
     print(calculate_iou(pred, target))
+
+
+if __name__ == '__main__':
+    test_iou_calculation()

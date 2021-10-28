@@ -2,15 +2,15 @@
 Image Operations
 - read images from disk into numpy arrays
 - write numpy arrays to disk as images
-- resize images
+- Image Resizing
+- Image Tinting
 """
 
 import numpy as np
 import matplotlib.pyplot as plt
 from imageio import imread, imwrite
 from skimage import io, transform
-from advanced_fields.computer_vision.image_processing.kernels import scale_0_255
-
+from advanced_fields.computer_vision.utils import scale_0_255
 
 input_uri = '../../../datasets/per_field/cv/color_cat.jpg'
 output_uri = 'output_img/'
