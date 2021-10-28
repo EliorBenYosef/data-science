@@ -7,7 +7,7 @@ import numpy as np
 
 from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, LabelEncoder, StandardScaler
+from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, LabelEncoder, StandardScaler, MinMaxScaler
 from sklearn.model_selection import train_test_split
 
 
@@ -57,7 +57,9 @@ def handle_missing_data(df, num_v_i, cat_v_i):
 
 def encode_categorical_data(df, X, y, v_i, num_v_i, cat_v_i):
     """
-    Encoding Categorical (non-numerical) Data
+    Encoding Categorical (non-numerical) Data into dummy variables / indicator variables.
+    can be easily done with:
+        df = pd.get_dummies(df)  # Convert categorical variable into dummy/indicator variables
 
     Encoding of Independent Variables:
         OrdinalEncoder - Index (scalar) Encoding:
@@ -123,6 +125,7 @@ def split_data_using_np(X, y, test_ratio=.9):
     y_test = y[indices[int(test_ratio * n_samples):]]
 
     return X_train, X_test, y_train, y_test
+
 
 def scale_features(X_train, X_test, y_train, y_test, num_v_i, v_i=None):
     """

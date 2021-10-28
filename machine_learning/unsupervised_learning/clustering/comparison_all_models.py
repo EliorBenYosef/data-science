@@ -56,7 +56,7 @@ def clustering(X, sample_label, x_labels, eps, min_samples=None,
 
 def bivariate_clustering():
     dataset = ClusteringDataSets()
-    dataset.get_Mall_Customers(indices=[-2, -1])  # [3, 4]. Use only two features
+    dataset.get_Mall_Customers(indices=[-2, -1])  # Use only two features (the last two features)
     X, sample_label, x_labels = dataset.X, dataset.sample_label, dataset.x_labels
 
     min_samples = 4

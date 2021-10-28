@@ -22,7 +22,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn import metrics
 
 
-df = pd.read_csv('../../../datasets/per_field/nlp/labeled_resumes.csv', encoding='utf-8')
+df = pd.read_csv('../../../../datasets/per_field/nlp/labeled_resumes.csv', encoding='utf-8')
 cat_var = 'Category'
 text_var = 'Resume'
 

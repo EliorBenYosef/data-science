@@ -11,7 +11,7 @@ from sklearn.model_selection import train_test_split
 from machine_learning.supervised_learning.classification.models_classification import ClassificationModels
 
 # csv.QUOTE_NONE - ignore (remove) the quotes in the text
-df = pd.read_csv('../../../datasets/per_field/nlp/labeled_reviews.tsv', delimiter='\t', quoting=QUOTE_NONE)
+df = pd.read_csv('../../../../datasets/per_field/nlp/labeled_reviews.tsv', delimiter='\t', quoting=QUOTE_NONE)
 cat_var = 'Liked'  # No (0) / Yes (1)
 text_var = 'Review'
 
