@@ -10,6 +10,13 @@ Then from a business point of view, you would rather use:
 - Decision Tree - when you want to have clear interpretation of your model results.
 - Random Forest - when you are just looking for high performance with less need for interpretation.
 
+- Linear: Logistic Regression.
+- Non-Linear: K-Nearest Neighbors (KNN), Nearest Centroid, (Gaussian) Naive Bayes (GNB), Decision Tree, Random Forest
+
+                                        Linear              Non-Linear
+- Support Vector Classifier (SVC)       Linear SVC          Kernel SVC
+- Discriminant Analysis (DA)            Linear DA (LDA)     Quadratic DA (QDA)
+
 TODO:
 add other classification models.
 Good ones for NLP include: CART, C5.0, Maximum Entropy.
@@ -18,6 +25,8 @@ Good ones for NLP include: CART, C5.0, Maximum Entropy.
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC, SVC
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
 from sklearn.neighbors import KNeighborsClassifier, NearestCentroid
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
@@ -154,6 +163,12 @@ class ClassificationModels:
 
         self.classifiers[model_name] = classifier
 
+    def lda(self, n_components):
+        """
+        Linear Discriminant Analysis (LDA)
+        """
+        pass
+
     """
     NonLinearModels
     """
@@ -195,11 +210,12 @@ class ClassificationModels:
 
     def kernel_svc(self, kernel='rbf', pol_deg=3, C=1.0, probability=False):
         """
-        Kernel Support Vector Classification (SVC)
-        https://www.johnwittenauer.net/machine-learning-exercises-in-python-part-6/
-
+        Kernel Support Vector Classification (SVC) - SVC with nonlinear kernels
+            (polynomial, gaussian, gaussian rbf, laplace rbf, hyperbolic tangent, sigmoid, ...)
         the non-linear kernel models (polynomial or Gaussian RBF) have more flexible non-linear decision boundaries
             with shapes that depend on the kind of kernel and its parameters.
+
+        https://www.johnwittenauer.net/machine-learning-exercises-in-python-part-6/
 
         C - inverse regularization strength
         Smaller C -> Stronger regularization (less overfitting) -> Larger margin - includes more/all the observations, allowing the margins to be calculated using
@@ -223,6 +239,12 @@ class ClassificationModels:
         self.evaluate_model_performance(self.y_test, y_pred, model_name)
 
         self.classifiers[model_name] = classifier
+
+    def qda(self, n_components):
+        """
+        Quadratic Discriminant Analysis (QDA)
+        """
+        pass
 
     def naive_bayes(self):
         """
