@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 from scipy import stats
 
 
-data = loadmat('../../../datasets/per_type/matlab/ex8data1.mat')
+data = loadmat('../../datasets/per_type/matlab/ex8data1.mat')
 X = data['X']  # (307, 2)
 # Using a set of labeled validation data (where the true anomalies have been marked for us):
 X_val = data['Xval']  # (307, 2)
