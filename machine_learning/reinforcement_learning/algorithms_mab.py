@@ -10,7 +10,7 @@ import numpy as np
 from scipy.stats import binom
 
 
-def ucb(dist_p, d, N):
+def ucb(dist_p, D, N):
     """
     Upper Confidence Bound (UCB) algorithm.
     Deterministic - choosing the ad with max UCB.
@@ -26,16 +26,21 @@ def ucb(dist_p, d, N):
                 ∆_i(n) = √(3∙log(n)/(2∙N_i(n))
     2. Select the ad i that has the maximum UCB:
             UCB = avg.r_i(n) + ∆_i(n).
+
+    :param dist_p: the probabilities of Binomial Distributions of the arms
+    :param D: the problem dimensionality (number of arms = ads).
+    :param N: number of experiments / rounds / iterations
+    :return: n_selections - numbers of selections
     """
-    n_selections = np.zeros(d, dtype=int)  # numbers of selections
+    n_selections = np.zeros(D, dtype=int)  # numbers of selections
     r_total = 0
 
-    r_sums = np.zeros(d, dtype=int)  # sums of rewards
+    r_sums = np.zeros(D, dtype=int)  # sums of rewards
     choose_first = 0
 
     for n in range(1, N+1):
         # choose ad to present:
-        if choose_first < d:
+        if choose_first < D:
             ad = choose_first
             choose_first += 1
         else:
@@ -57,7 +62,7 @@ def ucb(dist_p, d, N):
     return n_selections
 
 
-def ts(dist_p, d, N):
+def ts(dist_p, D, N):
     """
     Thompson Sampling algorithm.
     Probabilistic - it constructs a β distribution of the return for each ad,
@@ -72,13 +77,18 @@ def ts(dist_p, d, N):
         N_i^1(n) - the number of times the ad i got reward 1, up to round n.
         N_i^0(n) - the number of times the ad i got reward 0, up to round n.
     2. Select the ad i that has the highest θ_i(n).
+
+    :param dist_p: the probabilities of Binomial Distributions of the arms
+    :param D: the problem dimensionality (number of arms = ads).
+    :param N: number of experiments / rounds / iterations
+    :return: n_selections - numbers of selections
     """
-    n_selections = np.zeros(d, dtype=int)  # numbers of selections
+    n_selections = np.zeros(D, dtype=int)  # numbers of selections
 
     r_total = 0
 
-    n_r1 = np.zeros(d, dtype=int)  # numbers of rewards 1
-    n_r0 = np.zeros(d, dtype=int)  # numbers of rewards 0
+    n_r1 = np.zeros(D, dtype=int)  # numbers of rewards 1
+    n_r0 = np.zeros(D, dtype=int)  # numbers of rewards 0
 
     for n in range(N):
         # choose ad to present:

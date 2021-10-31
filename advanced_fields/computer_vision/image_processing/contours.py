@@ -17,6 +17,7 @@ img_bgr = cv2.imread(path)  # note that OpenCV uses BGR (and not RGB)
 img_gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
 thresh, img_bw = cv2.threshold(img_gray, thresh=128, maxval=255, type=0)
 
+# cv2.findContours can only be applied to binary images
 contours, hierarchy = cv2.findContours(img_bw, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 # contours, hierarchy = cv2.findContours(img_bw, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 # contours, hierarchy = cv2.findContours(img_bw, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
@@ -25,16 +26,23 @@ img_bw_cont = cv2.cvtColor(img_bw, cv2.COLOR_GRAY2BGR)
 img_gray_cont = cv2.cvtColor(img_gray, cv2.COLOR_GRAY2BGR)
 img_bgr_cont = img_bgr.copy()  # since OpenCV expects BGR (and not RGB)
 
-cv2.drawContours(img_bw_cont, contours, -1, (0, 255, 0), 3)  # cv2.FILLED instead of 3 fills objects
-cv2.drawContours(img_gray_cont, contours, -1, (0, 255, 0), 3)  # cv2.FILLED instead of 3 fills objects
-cv2.drawContours(img_bgr_cont, contours, -1, (0, 255, 0), 3)  # cv2.FILLED instead of 3 fills objects
+# cv2.drawContours can only be applied to RGB images
+#   thickness=cv2.FILLED fills objects
+cv2.drawContours(img_bw_cont, contours, contourIdx=-1, color=(0, 255, 0), thickness=3)
+cv2.drawContours(img_gray_cont, contours, contourIdx=-1, color=(0, 255, 0), thickness=3)
+cv2.drawContours(img_bgr_cont, contours, contourIdx=-1, color=(0, 255, 0), thickness=3)
 
-cv2.imwrite('output_img/' + file_name + '_01' + file_extension, img_bgr)  # '_bgr'
-cv2.imwrite('output_img/' + file_name + '_02' + file_extension, img_gray)  # '_gray'
-cv2.imwrite('output_img/' + file_name + '_03' + file_extension, img_bw)  # '_bw'
-cv2.imwrite('output_img/' + file_name + '_04' + file_extension, img_bw_cont)  # '_bw_cont'
-cv2.imwrite('output_img/' + file_name + '_05' + file_extension, img_gray_cont)  # '_gray_cont'
-cv2.imwrite('output_img/' + file_name + '_06' + file_extension, img_bgr_cont)  # '_bgr_cont'
+# cv2.imwrite('output_img/' + file_name + '_01' + file_extension, img_bgr)  # '_bgr'
+# cv2.imwrite('output_img/' + file_name + '_02' + file_extension, img_gray)  # '_gray'
+# cv2.imwrite('output_img/' + file_name + '_03' + file_extension, img_bw)  # '_bw'
+# cv2.imwrite('output_img/' + file_name + '_04' + file_extension, img_bw_cont)  # '_bw_cont'
+# cv2.imwrite('output_img/' + file_name + '_05' + file_extension, img_gray_cont)  # '_gray_cont'
+# cv2.imwrite('output_img/' + file_name + '_06' + file_extension, img_bgr_cont)  # '_bgr_cont'
 
-# plt.imshow(img_bgr_cont)
-# plt.show()
+cv2.imshow('img_bgr', img_bgr)
+cv2.imshow('img_gray', img_gray)
+cv2.imshow('img_bw', img_bw)
+cv2.imshow('img_bw_cont', img_bw_cont)
+cv2.imshow('img_gray_cont', img_gray_cont)
+cv2.imshow('img_bgr_cont', img_bgr_cont)
+cv2.waitKey()

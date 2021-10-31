@@ -187,8 +187,10 @@ class RegressionModels:
 
     def kernel_svr(self, kernel='rbf', pol_deg=3):
         """
-        Support Vector Regression (SVR) with nonlinear kernels (polynomial, gaussian, gaussian rbf, laplace rbf,
-        hyperbolic tangent, sigmoid, ...)
+        Kernel Support Vector Regression (SVR) - SVR with nonlinear kernels
+            (polynomial, gaussian, gaussian rbf, laplace rbf, hyperbolic tangent, sigmoid, ...)
+        the non-linear kernel models (polynomial or Gaussian RBF) have more flexible non-linear decision boundaries
+            with shapes that depend on the kind of kernel and its parameters.
 
         here, there's an implicit equation of the dependent variable with respect to the features
         (as opposed to Linear Regression, in which there's an explicit equation).

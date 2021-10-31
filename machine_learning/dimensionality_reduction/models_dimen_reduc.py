@@ -30,7 +30,7 @@ types:
 - Type 2 - Feature Extraction:
                                                 Linear              Non-Linear
     - Principal Component Analysis (PCA)        PCA                 Kernel PCA (K-PCA)
-    - Discriminant Analysis (DA)                Linear DA (LDA)     Quadratic DA (QDA), Gaussian DA (GDA)
+    - Discriminant Analysis (DA)                Linear DA (LDA)
     - Independent Component Analysis (ICA)      Fast ICA (F-ICA)
     - Singular Value Decomposition (SVD)
     - Latent Variable Model (LVM) - ???
@@ -49,7 +49,6 @@ from matplotlib.patches import Patch
 
 from sklearn.decomposition import PCA, KernelPCA, FastICA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
 from scipy.linalg import svd as SVD
 
 colors_bold = ('#0000FF', '#FF0000', '#00FF00',
@@ -200,7 +199,7 @@ class DimensionReducer:
     LinearModels
     """
 
-    def pca(self, n_components):
+    def lin_pca(self, n_components):
         """
         Principal Component Analysis (PCA) - unsupervised linear transformation technique
         https://setosa.io/ev/principal-component-analysis/
@@ -250,8 +249,10 @@ class DimensionReducer:
             and y are the transformed n×k-dimensional samples in the new subspace).
         """
         model_name = 'LDA'
-        model = LDA(n_components=n_components if n_components >= 1 else self.get_n_components_by_variance_retention(
-                fitted_model=LDA().fit(self.X_train, self.y_train), goal_variance=n_components))
+        model = LDA(n_components=n_components if n_components >= 1 else
+                    self.get_n_components_by_variance_retention(
+                        fitted_model=LDA().fit(self.X_train, self.y_train), goal_variance=n_components
+                    ))
         X_train_trans = model.fit_transform(self.X_train, self.y_train)
         X_test_trans = model.transform(self.X_test)
         self.print_results(model, model_name, n_components, X_train_trans)
@@ -276,7 +277,7 @@ class DimensionReducer:
     NonLinearModels
     """
 
-    def k_pca(self, n_components, kernel='rbf'):
+    def kernel_pca(self, n_components, kernel='rbf'):
         """
         Kernel PCA (K-PCA) - unsupervised nonlinear transformation technique
         """
@@ -286,12 +287,6 @@ class DimensionReducer:
         X_test_trans = model.transform(self.X_test)
         self.print_results(model, model_name, n_components, X_train_trans)
         self.X_trans[model_name] = (n_components, X_train_trans, X_test_trans)
-
-    def qda(self, n_components):
-        """
-        Quadratic Discriminant Analysis (QDA)
-        """
-        pass
 
     def gda(self, n_components):
         """
@@ -322,12 +317,12 @@ class DimensionReducer:
     """
 
     def all_linear(self, n_components):
-        self.pca(n_components)
+        self.lin_pca(n_components)
         self.lda(n_components)
         self.f_ica(n_components)
 
     def all_nonlinear(self, n_components, kernel='rbf'):
-        self.k_pca(n_components, kernel)
+        self.kernel_pca(n_components, kernel)
 
     def all(self, n_components, kernel='rbf', show=False):
         """

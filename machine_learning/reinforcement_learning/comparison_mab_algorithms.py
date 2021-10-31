@@ -19,10 +19,10 @@ import random
 import numpy as np
 from utils import plot_hist_sum, plot_hist_count
 
-d = 10  # the problem dimensionality (number of arms = ads).
+D = 10  # the problem dimensionality (number of arms = ads).
 
 dist_p = []  # the probabilities of Binomial Distributions of the arms
-for i in range(d):
+for i in range(D):
     dist_p.append(random.uniform(0, 1))
 dist_p = np.array(dist_p)
 np.set_printoptions(precision=3)
@@ -30,8 +30,8 @@ print(dist_p)
 
 N = 200  # number of experiments \ rounds \ iterations
 
-ads_selected_ucb = ucb(dist_p, d, N)
-ads_selected_ts = ts(dist_p, d, N)
+ads_selected_ucb = ucb(dist_p, D, N)
+ads_selected_ts = ts(dist_p, D, N)
 
 #########################################
 
