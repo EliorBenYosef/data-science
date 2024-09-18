@@ -339,6 +339,25 @@ class RegressionDataSets:
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
             self.X, self.y, test_size=0.2, random_state=0)
 
+    def get_imubit(self, indices=None):
+        # self.x_labels = get_X_from_sklearn_dataset(dataset, indices)
+        # self.y_label = 'Diabetes progression after 1Y'
+        # self.sample_label = 'Patient'
+
+        self.x_labels = [''] * 128
+        self.y_label = ''
+        self.sample_label = ''
+
+        # path = '../../../imubit/jdl_challenge'
+        path = '../../imubit/jdl_challenge'
+
+        self.X_train, self.X_test = [
+            pd.read_csv(f'{path}_data_{dataset}.csv', parse_dates=['date'], index_col='date').values
+            for dataset in ['train', 'test']]
+        self.y_train, self.y_test = [
+            pd.read_csv(f'{path}_target_{dataset}.csv', parse_dates=['date'], index_col='date').values[:, 0]
+            for dataset in ['train', 'test']]
+
 
 class ClusteringDataSets:
 
@@ -351,15 +370,34 @@ class ClusteringDataSets:
 
     def get_Mall_Customers(self, indices=None):
         df = pd.read_csv('../../../datasets/per_field/usl/clustering/Mall_Customers.csv')
-        self.x_labels = df.columns.values[indices] if indices is not None else df.columns.values[1:-1]
+        # Data Preprocessing:
+        df = df.drop('CustomerID', axis=1)
+        df = df.rename(columns={'Annual Income (k$)': 'Income', 'Spending Score (1-100)': 'Spend_Score'})
+
+        self.x_labels = df.columns.values[indices] if indices is not None else df.columns.values[:-1]
         self.y_label = 'Customer Group'
         self.sample_label = 'Customer'
 
+        categorical_vars = ['Sex']
+        numerical_vars = ['Age', 'Income', 'Spend_Score']
+
+        # TODO: decide what's better:
+
+        # Option 1:
+        # # Encode categorical variables into dummy \ indicator variables:
+        # df = pd.get_dummies(df)
+        # # Scale numerical variables:
+        # scaler = MinMaxScaler()  # StandardScaler() ?
+        # df[numerical_vars] = scaler.fit_transform(df[numerical_vars])
+        # self.X = df.values
+
+        # Option 2:
         # Encoding categorical data & Feature Scaling
         ct = ColumnTransformer(
-            transformers=[('nominal', OneHotEncoder(), ['Sex']),
-                          ('standardization', StandardScaler(), ['Age', 'Annual Income (k$)', 'Spending Score (1-100)'])],
+            transformers=[('nominal', OneHotEncoder(), categorical_vars),
+                          ('standardization', StandardScaler(), numerical_vars)],
             remainder='passthrough')
-        self.X = ct.fit_transform(df.iloc[:, 1:])
+        self.X = ct.fit_transform(df)
+
         if indices is not None:
             self.X = self.X[:, indices]
