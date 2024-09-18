@@ -124,7 +124,7 @@ class RegressionModels:
         pass
         # TODO: complete
 
-    def lin_svr(self, print_formula=True):
+    def lin_svr(self, print_formula=False):
         """
         Linear Support Vector Regression (SVR linear)
             similar to SVR with kernel='linear'
@@ -149,7 +149,7 @@ class RegressionModels:
         regressor.fit(X_train_sc, y_train_sc.ravel())
 
         if print_formula:
-            print(f'y = {regressor.coef_[0]:.5f}x + {regressor.intercept_[0]:.6f}')
+            print(f'y = {regressor.coef_[0]:.5f}x + {regressor.intercept_[0]:.6f}')  # TODO
 
         y_pred = sc_y.inverse_transform(regressor.predict(sc_X.transform(self.X_test.astype(float))))
         self.predictions[model_name] = y_pred
