@@ -1,10 +1,4 @@
 /.idea
-/ignore
 /datasets/per_field/cv/clss/test_set
 /datasets/per_field/cv/clss/training_set
-/advanced_fields/computer_vision/image_processing/exercises
-/advanced_fields/computer_vision/image_processing/libs_images
-/advanced_fields/natural_language_processing/tasks/catboost_info
-/deep_learning/libraries
-/deep_learning/mine_old
-/datasets/per_field/nlp/pdf_resumes/
+run.py
