@@ -130,8 +130,18 @@ def split_data_using_np(X, y, test_ratio=.9):
 def scale_features(X_train, X_test, y_train, y_test, num_v_i, v_i=None):
     """
     Feature Scaling
-        Normalization (Normalizer) - scales a feature's values to [0,1]
+        Normalization (MinMaxScaler) - scales a feature's values to [0,1]
+            Use this as the first scaler choice to transform a feature,
+            as it will preserve the shape of the dataset (no distortion).
         Standardization (StandardScaler) - scales a feature's values to [-3,3]
+            Removes the mean and scales the data to unit variance (mean 0, STD 1).
+            Use this if you know the data distribution is normal.
+        RobustScaler
+            Use this if there are outliers.
+            Alternatively you could remove the outliers and use either of the above 2 scalers.
+
+    Note: If scaler is used before train_test_split, data leakage will happen.
+    Use scaler only after train_test_split.
 
     Required for non-linear models
     Not required for linear classification models,
